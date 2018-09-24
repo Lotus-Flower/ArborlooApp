@@ -10,14 +10,14 @@ class ReportDB {
     var id: Int = 0
 
     @ColumnInfo(name = "temperature")
-    var temperature: Int = 0
+    var temperature: Double? = null
 
     @ColumnInfo(name = "moisture")
-    var moisture: Int = 0
+    var moisture: Double? = null
 
     @ColumnInfo(name = "oxygen")
-    var oxygen: Int = 0
+    var oxygen: Double? = null
 
     @ColumnInfo(name = "ph")
-    var ph: Int = 0
+    var ph: Double? = null
 }

@@ -1,8 +1,11 @@
 package com.rit.matthew.arborlooapp.Database.Repository
 
+import android.util.Log
 import com.rit.matthew.arborlooapp.Base.Callback.BaseCallback
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
 import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
+import io.reactivex.Completable
+import io.reactivex.CompletableObserver
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
@@ -23,8 +26,29 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                     override fun onError(e: Throwable) {
+                        Log.d("MMMM", e.toString())
                     }
 
                 })
+    }
+
+    fun insertReport(reportDB: ReportDB, callback: BaseCallback){
+
+        Completable.fromCallable{ appDB?.reportDAO()?.insertReport(reportDB) }
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(object : CompletableObserver{
+                    override fun onComplete() {
+                        callback.onSuccess(null)
+                    }
+
+                    override fun onSubscribe(d: Disposable?) {
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        Log.d("MMMM", e.toString())
+                    }
+
+                })
+
     }
 }
