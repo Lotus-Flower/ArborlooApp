@@ -6,8 +6,9 @@ import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "ReportDB")
 class ReportDB {
-    @PrimaryKey
-    var id: Int = 0
+
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null
 
     @ColumnInfo(name = "name")
     var name: String? = null
