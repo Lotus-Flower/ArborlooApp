@@ -49,6 +49,5 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                 })
-
     }
 }

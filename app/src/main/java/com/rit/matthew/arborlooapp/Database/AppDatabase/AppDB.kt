@@ -15,9 +15,9 @@ abstract class AppDB : RoomDatabase() {
     companion object {
         private var INSTANCE: AppDB? = null
 
-        fun getInstance(context: Context): AppDB?{
+        fun getInstance(context: Context?): AppDB?{
             if(INSTANCE == null){
-                INSTANCE = Room.databaseBuilder(context.applicationContext, AppDB::class.java, "report-database").build()
+                INSTANCE = Room.databaseBuilder(context!!.applicationContext, AppDB::class.java, "report-database").build()
             }
 
             return INSTANCE

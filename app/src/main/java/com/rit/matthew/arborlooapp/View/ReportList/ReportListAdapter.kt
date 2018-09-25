@@ -5,12 +5,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
+import com.rit.matthew.arborlooapp.Base.Callback.BaseCallback
 import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
 import com.rit.matthew.arborlooapp.R
 import kotlinx.android.synthetic.main.report_list_recycler.view.*
 
-class ReportListAdapter(val reports: ArrayList<ReportDB>, val context: Context) : RecyclerView.Adapter<ReportListAdapter.ViewHolder>(){
+class ReportListAdapter(val reports: ArrayList<ReportDB>, val context: Context?, val baseCallback: BaseCallback) : RecyclerView.Adapter<ReportListAdapter.ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.report_list_recycler, parent, false))
     }
@@ -27,9 +29,16 @@ class ReportListAdapter(val reports: ArrayList<ReportDB>, val context: Context) 
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         holder?.titleTextView?.text = reports[position].name as CharSequence
+
+        holder?.linearLayout?.setOnClickListener({
+            baseCallback.onSuccess(mutableListOf(reports[position]))
+        })
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
+
         val titleTextView: TextView = view.text_view_title
+        val linearLayout: LinearLayout = view.linear_layout_report_recycler
+
     }
 }
