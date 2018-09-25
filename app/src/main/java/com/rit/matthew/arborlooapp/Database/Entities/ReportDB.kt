@@ -9,6 +9,9 @@ class ReportDB {
     @PrimaryKey
     var id: Int = 0
 
+    @ColumnInfo(name = "name")
+    var name: String? = null
+
     @ColumnInfo(name = "temperature")
     var temperature: Double? = null
 
