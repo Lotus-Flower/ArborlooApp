@@ -3,11 +3,14 @@ package com.rit.matthew.arborlooapp.Database.AppDatabase
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
+import android.arch.persistence.room.TypeConverters
 import android.content.Context
 import com.rit.matthew.arborlooapp.Database.DAO.ReportDAO
 import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
+import com.rit.matthew.arborlooapp.Database.TypeConverter.ReportTypeConverter
 
 @Database(entities = [(ReportDB::class)], version = 1)
+@TypeConverters(ReportTypeConverter::class)
 abstract class AppDB : RoomDatabase() {
 
     abstract fun reportDAO(): ReportDAO

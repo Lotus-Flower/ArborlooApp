@@ -1,5 +1,6 @@
 package com.rit.matthew.arborlooapp.Database.Repository
 
+import android.arch.core.R
 import android.util.Log
 import com.rit.matthew.arborlooapp.Base.Callback.BaseCallback
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
@@ -20,6 +21,26 @@ class ReportRepository(private var appDB: AppDB?) {
                 .subscribe(object : SingleObserver<MutableList<ReportDB>?> {
                     override fun onSuccess(t: MutableList<ReportDB>?) {
                         callback.onSuccess(t)
+                    }
+
+                    override fun onSubscribe(d: Disposable) {
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.d("MMMM", e.toString())
+                    }
+
+                })
+    }
+
+    fun getReport(id: Long, callback: BaseCallback){
+
+        Single.fromCallable<ReportDB> { appDB?.reportDAO()?.getTemperatureData(id) }
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(object : SingleObserver<ReportDB> {
+                    override fun onSuccess(t: ReportDB) {
+                        //callback.onSuccess(t)
+                        Log.d("MMMM", t.temperature!!.get(0).toString())
                     }
 
                     override fun onSubscribe(d: Disposable) {

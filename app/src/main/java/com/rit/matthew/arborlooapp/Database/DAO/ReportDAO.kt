@@ -1,17 +1,19 @@
 package com.rit.matthew.arborlooapp.Database.DAO
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Delete
-import android.arch.persistence.room.Insert
+import android.arch.persistence.room.*
 import android.arch.persistence.room.OnConflictStrategy.REPLACE
-import android.arch.persistence.room.Query
 import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
+import com.rit.matthew.arborlooapp.Database.TypeConverter.ReportTypeConverter
 
 @Dao
-interface ReportDAO {
+@TypeConverters(ReportTypeConverter::class)
+interface ReportDAO{
 
     @Query("Select * FROM ReportDB")
     fun getReports() : MutableList<ReportDB>
+
+    @Query("Select * FROM ReportDB WHERE id = :reportId LIMIT 1")
+    fun getTemperatureData(reportId: Long) : ReportDB
 
     @Insert(onConflict = REPLACE)
     fun insertReport(reportDB: ReportDB)

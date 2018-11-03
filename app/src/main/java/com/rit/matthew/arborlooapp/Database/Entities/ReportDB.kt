@@ -1,14 +1,16 @@
 package com.rit.matthew.arborlooapp.Database.Entities
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import android.arch.persistence.room.*
+import com.rit.matthew.arborlooapp.Database.TypeConverter.ReportTypeConverter
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Entity(tableName = "ReportDB")
+@TypeConverters(ReportTypeConverter::class)
 class ReportDB {
 
     @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
+    var id: Long? = null
 
     @ColumnInfo(name = "name")
     var name: String? = null
@@ -17,14 +19,8 @@ class ReportDB {
     var info: String? = null
 
     @ColumnInfo(name = "temperature")
-    var temperature: Double? = null
+    var temperature: ArrayList<Double>? = null
 
     @ColumnInfo(name = "moisture")
-    var moisture: Double? = null
-
-    @ColumnInfo(name = "oxygen")
-    var oxygen: Double? = null
-
-    @ColumnInfo(name = "ph")
-    var ph: Double? = null
+    var moisture: ArrayList<Double>? = null
 }

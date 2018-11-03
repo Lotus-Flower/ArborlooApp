@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ArborlooApp</string>
+    <string name="temperature">Temperature Data</string>
+    <string name="moisture">Moisture Data</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
