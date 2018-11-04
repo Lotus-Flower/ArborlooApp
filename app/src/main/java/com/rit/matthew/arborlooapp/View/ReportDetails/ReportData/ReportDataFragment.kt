@@ -4,22 +4,28 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.rit.matthew.arborlooapp.Base.Callback.BaseCallback
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
 import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
 import com.rit.matthew.arborlooapp.Model.Report
 
 import com.rit.matthew.arborlooapp.R
+import com.rit.matthew.arborlooapp.View.ReportDetails.Dashboard.DashboardActivity
 import com.rit.matthew.arborlooapp.View.ReportList.ReportListAdapter
+import kotlinx.android.synthetic.main.dashboard_activity.*
 import kotlinx.android.synthetic.main.report_data_fragment.*
 
-class ReportDataFragment : Fragment(), ReportDataContract.View {
+class ReportDataFragment : Fragment(), ReportDataContract.View{
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: ReportDataListAdapter
+    lateinit var adapter: ReportDataListAdapter
     private lateinit var presenter: ReportDataPresenter
+
+    private lateinit var report:Report
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,20 +46,33 @@ class ReportDataFragment : Fragment(), ReportDataContract.View {
     }
 
     fun setupUI(){
-        val report = activity?.intent?.getParcelableExtra("report") as Report
+        report = activity?.intent?.getParcelableExtra("report") as Report
 
         recyclerView = recycler_view_report_data
 
-        adapter = ReportDataListAdapter(report.temperature, context)
+        val copyTempList: ArrayList<Double>? = ArrayList()
+        copyTempList?.addAll(report.temperature!!)
+
+        adapter = ReportDataListAdapter(copyTempList, context)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+
+        setEventHandlers()
     }
 
     fun setEventHandlers(){
 
     }
 
-    override fun displayDataList(data: ArrayList<Double>) {
+    fun updateDataTemperature(){
+        displayDataList(report.temperature)
+    }
+
+    fun updateDataMoisture(){
+        displayDataList(report.moisture)
+    }
+
+    override fun displayDataList(data: ArrayList<Double>?) {
         adapter.updateDataSet(data)
     }
 

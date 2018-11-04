@@ -2,6 +2,7 @@ package com.rit.matthew.arborlooapp.View.ReportDetails.ReportData
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +15,9 @@ class ReportDataListAdapter(val data: ArrayList<Double>?, val context: Context?)
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.report_data_list_recycler, parent, false))
     }
 
-    fun updateDataSet(updatedData: ArrayList<Double>){
-        data?.clear()
-        data?.addAll(updatedData)
+    fun updateDataSet(updatedData: ArrayList<Double>?){
+        data!!.clear()
+        data!!.addAll(updatedData!!)
         notifyDataSetChanged()
     }
 

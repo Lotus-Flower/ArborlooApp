@@ -2,12 +2,14 @@ package com.rit.matthew.arborlooapp.View.ReportDetails.ReportGraph
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.rit.matthew.arborlooapp.R
+import kotlinx.android.synthetic.main.dashboard_activity.*
 
-class ReportGraphFragment : Fragment() {
+class ReportGraphFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +23,14 @@ class ReportGraphFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
 
+    fun updateDataTemperature(){
+        Log.d("MMMM", "Temp2")
+    }
+
+    fun updateDataMoisture(){
+        Log.d("MMMM", "Moist2")
     }
 
 }

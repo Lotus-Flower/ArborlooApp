@@ -31,7 +31,7 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
         presenter = ReportListPresenter(this, ReportRepository(appDB = AppDB.getInstance(this)))
 
-        val repo = ReportRepository(appDB = AppDB.getInstance(this))
+        /*val repo = ReportRepository(appDB = AppDB.getInstance(this))
         val reportDB = ReportDB()
 
         repo.getReport(1, object : BaseCallback{
@@ -40,10 +40,10 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
             }
         })
 
-        /*reportDB.name = "Arborloo 1"
+        reportDB.name = "Arborloo 1"
         reportDB.info = "Test Information"
         reportDB.temperature = arrayListOf(6.0, 11.0, 21.0)
-        reportDB.moisture = arrayListOf(6.0, 11.0, 21.0)
+        reportDB.moisture = arrayListOf(40.0, 193.0, 13.0, 88.9)
 
         repo.insertReport(reportDB, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
@@ -56,7 +56,7 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         reportDB1.name = "Arborloo 2"
         reportDB1.info = "Test Information 2"
         reportDB1.temperature = arrayListOf(5.0, 10.0, 20.0)
-        reportDB1.moisture = arrayListOf(5.0, 10.0, 20.0)
+        reportDB1.moisture = arrayListOf(5.6, 10.8, 29.0)
 
         repo.insertReport(reportDB1, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
