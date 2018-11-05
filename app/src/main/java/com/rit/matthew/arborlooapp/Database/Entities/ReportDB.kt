@@ -17,10 +17,4 @@ class ReportDB {
 
     @ColumnInfo(name = "info")
     var info: String? = null
-
-    @ColumnInfo(name = "temperature")
-    var temperature: ArrayList<Double>? = null
-
-    @ColumnInfo(name = "moisture")
-    var moisture: ArrayList<Double>? = null
 }

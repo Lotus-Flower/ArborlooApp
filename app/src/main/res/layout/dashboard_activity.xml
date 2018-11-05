@@ -28,6 +28,9 @@
             app:elevation="0dp"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:tabMaxWidth="0dp"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
 
     </android.support.design.widget.AppBarLayout>
@@ -52,13 +55,15 @@
             android:id="@+id/floating_action_button_moisture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/colorAccent"/>
+            app:fab_colorNormal="@color/colorAccent"
+            android:src="@drawable/ic_drop"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/floating_action_button_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/colorAccent" />
+            app:fab_colorNormal="@color/colorAccent"
+            android:src="@drawable/ic_thermometer"/>
 
     </com.github.clans.fab.FloatingActionMenu>
 

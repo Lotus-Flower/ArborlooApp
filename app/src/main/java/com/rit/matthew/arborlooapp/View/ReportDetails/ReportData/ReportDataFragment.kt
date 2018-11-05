@@ -8,15 +8,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.rit.matthew.arborlooapp.Base.Callback.BaseCallback
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
 import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
 import com.rit.matthew.arborlooapp.Model.Report
+import com.rit.matthew.arborlooapp.Model.ReportData
 
 import com.rit.matthew.arborlooapp.R
-import com.rit.matthew.arborlooapp.View.ReportDetails.Dashboard.DashboardActivity
-import com.rit.matthew.arborlooapp.View.ReportList.ReportListAdapter
-import kotlinx.android.synthetic.main.dashboard_activity.*
 import kotlinx.android.synthetic.main.report_data_fragment.*
 
 class ReportDataFragment : Fragment(), ReportDataContract.View{
@@ -26,6 +23,8 @@ class ReportDataFragment : Fragment(), ReportDataContract.View{
     private lateinit var presenter: ReportDataPresenter
 
     private lateinit var report:Report
+    private var tempData: ArrayList<ReportData>? = ArrayList()
+    private var moistData: ArrayList<ReportData>? = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,11 +46,13 @@ class ReportDataFragment : Fragment(), ReportDataContract.View{
 
     fun setupUI(){
         report = activity?.intent?.getParcelableExtra("report") as Report
+        tempData = activity?.intent?.getParcelableArrayListExtra("temp")
+        moistData = activity?.intent?.getParcelableArrayListExtra("moist")
 
         recyclerView = recycler_view_report_data
 
-        val copyTempList: ArrayList<Double>? = ArrayList()
-        copyTempList?.addAll(report.temperature!!)
+        val copyTempList: ArrayList<ReportData>? = ArrayList()
+        tempData?.let { copyTempList?.addAll(it) }
 
         adapter = ReportDataListAdapter(copyTempList, context)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -65,14 +66,16 @@ class ReportDataFragment : Fragment(), ReportDataContract.View{
     }
 
     fun updateDataTemperature(){
-        displayDataList(report.temperature)
+        text_view_report_data_title.text = resources.getString(R.string.temperature)
+        displayDataList(tempData)
     }
 
     fun updateDataMoisture(){
-        displayDataList(report.moisture)
+        text_view_report_data_title.text = resources.getString(R.string.moisture)
+        displayDataList(moistData)
     }
 
-    override fun displayDataList(data: ArrayList<Double>?) {
+    override fun displayDataList(data: ArrayList<ReportData>?) {
         adapter.updateDataSet(data)
     }
 

@@ -7,12 +7,12 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @Parcelize
-data class Report(var name: String?, var info: String?, var temperature: ArrayList<Double>?, var moisture: ArrayList<Double>?) : Parcelable{
+data class Report(var name: String?, var info: String?) : Parcelable{
 
     companion object {
         fun fromReportDB(reportDB: ReportDB) : Report{
 
-            val report = Report(reportDB.name, reportDB.info, reportDB.temperature, reportDB.moisture)
+            val report = Report(reportDB.name, reportDB.info)
 
             return report
         }

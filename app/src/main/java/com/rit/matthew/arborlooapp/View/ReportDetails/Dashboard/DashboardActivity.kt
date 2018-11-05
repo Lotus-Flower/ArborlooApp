@@ -12,8 +12,6 @@ import com.rit.matthew.arborlooapp.View.ReportDetails.ReportData.ReportDataFragm
 import com.rit.matthew.arborlooapp.View.ReportDetails.ReportGraph.ReportGraphFragment
 import kotlinx.android.synthetic.main.dashboard_activity.*
 
-
-
 class DashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
