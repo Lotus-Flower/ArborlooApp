@@ -18,10 +18,10 @@ interface ReportDAO{
     @Query("Select * FROM ReportDB WHERE id = :reportId LIMIT 1")
     fun getReportById(reportId: Long) : ReportDB
 
-    @Query("SELECT * FROM TemperatureDB WHERE reportId=:reportId")
+    @Query("SELECT * FROM TemperatureDB WHERE reportId=:reportId ORDER BY datetime(dateTime)")
     fun getTemperatureData(reportId: Long?): MutableList<TemperatureDB>
 
-    @Query("SELECT * FROM MoistureDB WHERE reportId=:reportId")
+    @Query("SELECT * FROM MoistureDB WHERE reportId=:reportId ORDER BY datetime(dateTime)")
     fun getMoistureData(reportId: Long?): MutableList<MoistureDB>
 
     @Insert(onConflict = REPLACE)

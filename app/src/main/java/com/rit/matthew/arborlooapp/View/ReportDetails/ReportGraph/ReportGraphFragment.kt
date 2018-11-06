@@ -51,8 +51,8 @@ class ReportGraphFragment : Fragment(){
 
         for(i in reportData.indices){
             val entry: Entry = Entry()
-            val entryData = tempData?.get(i)?.data
-            val entryDateTime = tempData?.get(i)?.dateTime
+            val entryData = reportData.get(i).data
+            val entryDateTime = reportData.get(i).dateTime
 
             entry.y = entryData!!.toFloat()
             entry.x = entryDateTime!!.toEpochSecond().toFloat()
@@ -82,6 +82,8 @@ class ReportGraphFragment : Fragment(){
         report_data_graph.animateX(0)
         report_data_graph.invalidate()
     }
+
+
 
     fun updateDataTemperature(){
         getEntries(tempData!!, "Temperature")

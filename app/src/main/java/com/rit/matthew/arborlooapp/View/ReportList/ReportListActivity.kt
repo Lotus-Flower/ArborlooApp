@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.report_list_activity.*
 import org.threeten.bp.Instant
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
+import java.util.*
 
 class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
@@ -63,125 +64,49 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
             }
         })
 
-        val temperatureDB1 = TemperatureDB()
+        val rangeMin = 0.0
+        val rangeMax = 100.0
+        val random = Random()
 
-        temperatureDB1.data = 90.0
-        temperatureDB1.dateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541404810000), ZoneId.systemDefault())
-        temperatureDB1.reportId = 1
+        var newTempData = 0.0
+        var newMoistData = 0.0
+        var newDateTime: OffsetDateTime? = null
+        var newReportId:Long = 1
 
-        repo.insertTemp(temperatureDB1, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
+        val points = 200
 
+        for(i in 0..points){
+            newTempData = rangeMin + (rangeMax - rangeMin) * random.nextDouble()
+            newMoistData = rangeMin + (rangeMax - rangeMin) * random.nextDouble()
+            newDateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541404810000 + (i * 3600000)), ZoneId.systemDefault())
+
+            if(i > (points/2)){
+                newReportId = 2
             }
-        })
 
-        val temperatureDB2 = TemperatureDB()
+            var newTemp = TemperatureDB()
+            var newMoist = MoistureDB()
 
-        temperatureDB2.data = 91.0
-        temperatureDB2.dateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541408410000), ZoneId.systemDefault())
-        temperatureDB2.reportId = 1
+            newTemp.data = newTempData
+            newTemp.dateTime = newDateTime
+            newTemp.reportId = newReportId
 
-        repo.insertTemp(temperatureDB2, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
+            newMoist.data = newMoistData
+            newMoist.dateTime = newDateTime
+            newMoist.reportId = newReportId
 
-            }
-        })
+            repo.insertTemp(newTemp, object : BaseCallback{
+                override fun onSuccess(data: MutableList<*>?) {
 
-        val temperatureDB3 = TemperatureDB()
+                }
+            })
 
-        temperatureDB3.data = 92.0
-        temperatureDB3.dateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541412010000), ZoneId.systemDefault())
-        temperatureDB3.reportId = 1
+            repo.insertMoist(newMoist, object : BaseCallback{
+                override fun onSuccess(data: MutableList<*>?) {
 
-        repo.insertTemp(temperatureDB3, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-
-            }
-        })
-
-        val temperatureDB4 = TemperatureDB()
-
-        temperatureDB4.data = 93.0
-        temperatureDB4.dateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541404810000), ZoneId.systemDefault())
-        temperatureDB4.reportId = 2
-
-        repo.insertTemp(temperatureDB4, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-
-            }
-        })
-
-        val temperatureDB5 = TemperatureDB()
-
-        temperatureDB5.data = 54.0
-        temperatureDB5.dateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541408410000), ZoneId.systemDefault())
-        temperatureDB5.reportId = 2
-
-        repo.insertTemp(temperatureDB5, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-
-            }
-        })
-
-        val temperatureDB6 = TemperatureDB()
-
-        temperatureDB6.data = 102.0
-        temperatureDB6.dateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541412010000), ZoneId.systemDefault())
-        temperatureDB6.reportId = 2
-
-        repo.insertTemp(temperatureDB6, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-
-            }
-        })
-
-        val moistureDB1 = MoistureDB()
-
-        moistureDB1.data = 6.0
-        moistureDB1.dateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541404810000), ZoneId.systemDefault())
-        moistureDB1.reportId = 1
-
-        repo.insertMoist(moistureDB1, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-
-            }
-        })
-
-        val moistureDB2 = MoistureDB()
-
-        moistureDB2.data = 7.0
-        moistureDB2.dateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541408410000), ZoneId.systemDefault())
-        moistureDB2.reportId = 1
-
-        repo.insertMoist(moistureDB2, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-
-            }
-        })
-
-        val moistureDB3 = MoistureDB()
-
-        moistureDB3.data = 8.0
-        moistureDB3.dateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541404810000), ZoneId.systemDefault())
-        moistureDB3.reportId = 2
-
-        repo.insertMoist(moistureDB3, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-
-            }
-        })
-
-        val moistureDB4 = MoistureDB()
-
-        moistureDB4.data = 9.0
-        moistureDB4.dateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541408410000), ZoneId.systemDefault())
-        moistureDB4.reportId = 2
-
-        repo.insertMoist(moistureDB4, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-
-            }
-        })
+                }
+            })
+        }
 
         setupUI()
         setEventHandlers()
