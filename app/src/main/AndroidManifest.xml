@@ -9,14 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".View.ReportList.ReportListActivity">
+        <activity android:name=".View.ReportList.ReportListActivity"
+            android:screenOrientation="sensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.ReportDetails.Dashboard.DashboardActivity"></activity>
+        <activity android:name=".View.ReportDetails.Dashboard.DashboardActivity"
+            android:screenOrientation="sensor">
+            
+        </activity>
     </application>
 
 </manifest>
