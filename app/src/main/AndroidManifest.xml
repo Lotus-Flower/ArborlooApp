@@ -16,11 +16,19 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+
         </activity>
         <activity android:name=".View.ReportDetails.Dashboard.DashboardActivity"
             android:screenOrientation="sensor">
-            
         </activity>
+        <service
+            android:name=".Usb.UsbService"
+            android:enabled="true">
+        </service>
     </application>
 
 </manifest>
