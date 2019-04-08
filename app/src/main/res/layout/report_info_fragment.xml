@@ -7,17 +7,16 @@
             type="com.rit.matthew.arborlooapp.Model.Report">
         </variable>
     </data>
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:paddingEnd="40dp"
             android:paddingStart="40dp"
+            android:padding="40dp"
             android:orientation="vertical">
 
             <TextView
@@ -31,12 +30,304 @@
                 />
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pit_fullness"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+            <com.warkiz.widget.IndicatorStayLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+                <com.warkiz.widget.IndicatorSeekBar
+                    android:id="@+id/fullness_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:isb_max="5"
+                    app:isb_min="1"
+                    app:isb_ticks_count="5"
+                    app:isb_show_tick_marks_type="oval"
+                    app:isb_show_tick_texts="false"
+                    app:isb_track_progress_color="@color/colorAccent"
+                    app:isb_show_indicator="rounded_rectangle"
+                    />
+            </com.warkiz.widget.IndicatorStayLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pit_drainage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+            <com.warkiz.widget.IndicatorStayLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+                <com.warkiz.widget.IndicatorSeekBar
+                    android:id="@+id/drainage_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:isb_max="5"
+                    app:isb_min="1"
+                    app:isb_ticks_count="5"
+                    app:isb_show_tick_marks_type="oval"
+                    app:isb_show_tick_texts="false"
+                    app:isb_track_progress_color="@color/colorAccent"
+                    app:isb_show_indicator="rounded_rectangle"
+                    />
+            </com.warkiz.widget.IndicatorStayLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/slab_cleanliness"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+            <com.warkiz.widget.IndicatorStayLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+                <com.warkiz.widget.IndicatorSeekBar
+                    android:id="@+id/cleanliness_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:isb_max="5"
+                    app:isb_min="1"
+                    app:isb_ticks_count="5"
+                    app:isb_show_tick_marks_type="oval"
+                    app:isb_show_tick_texts="false"
+                    app:isb_track_progress_color="@color/colorAccent"
+                    app:isb_show_indicator="rounded_rectangle"
+                    />
+            </com.warkiz.widget.IndicatorStayLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pests"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+            <com.warkiz.widget.IndicatorStayLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+                <com.warkiz.widget.IndicatorSeekBar
+                    android:id="@+id/pest_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:isb_max="5"
+                    app:isb_min="1"
+                    app:isb_ticks_count="5"
+                    app:isb_show_tick_marks_type="oval"
+                    app:isb_show_tick_texts="false"
+                    app:isb_track_progress_color="@color/colorAccent"
+                    app:isb_show_indicator="rounded_rectangle"
+                    />
+            </com.warkiz.widget.IndicatorStayLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/smell"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+            <com.warkiz.widget.IndicatorStayLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+                <com.warkiz.widget.IndicatorSeekBar
+                    android:id="@+id/smell_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:isb_max="5"
+                    app:isb_min="1"
+                    app:isb_ticks_count="5"
+                    app:isb_show_tick_marks_type="oval"
+                    app:isb_show_tick_texts="false"
+                    app:isb_track_progress_color="@color/colorAccent"
+                    app:isb_show_indicator="rounded_rectangle"
+                    />
+            </com.warkiz.widget.IndicatorStayLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/covered"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/cover_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yes"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no"/>
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/water"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/water_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yes"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no"/>
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/soap"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/soap_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yes"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no"/>
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/wipe"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/wipe_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yes"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no"/>
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/inside_trees"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/inside_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yes"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no"/>
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/outside_trees"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_marginBottom="8dp"/>
+
+            <RadioGroup
+                android:id="@+id/outside_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yes"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no"/>
+            </RadioGroup>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/other_info"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <TextView
                 android:id="@+id/text_view_info_report_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{`Info: ` + currentReport.info}"
+                android:text="@{currentReport.info}"
+                android:layout_marginBottom="16dp"
                 />
+
+            <Button
+                android:id="@+id/apply_info_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:text="@string/apply"/>
+
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 </layout>

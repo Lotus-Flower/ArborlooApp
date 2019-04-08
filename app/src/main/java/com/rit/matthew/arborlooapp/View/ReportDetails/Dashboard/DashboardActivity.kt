@@ -14,6 +14,11 @@ import kotlinx.android.synthetic.main.dashboard_activity.*
 
 class DashboardActivity : AppCompatActivity() {
 
+    private final val INFO: Int = 0
+    private final val SURVEY: Int = 1
+    private final val DATA: Int = 2
+    private final val GRAPH: Int = 3
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dashboard_activity)
@@ -55,9 +60,10 @@ class DashboardActivity : AppCompatActivity() {
                 pager.currentItem = position
 
                 when (position) {
-                    0 -> floating_action_button_data_type.visibility = View.GONE
-                    1 -> floating_action_button_data_type.visibility = View.VISIBLE
-                    2 -> floating_action_button_data_type.visibility = View.VISIBLE
+                    INFO -> floating_action_button_data_type.visibility = View.GONE
+                    SURVEY -> floating_action_button_data_type.visibility = View.GONE
+                    DATA -> floating_action_button_data_type.visibility = View.VISIBLE
+                    GRAPH -> floating_action_button_data_type.visibility = View.VISIBLE
                 }
             }
 
@@ -68,11 +74,11 @@ class DashboardActivity : AppCompatActivity() {
             val adapter = pager.adapter as DashboardPagerAdapter
 
             when(pager.currentItem){
-                1 -> {
+                DATA -> {
                     val tabFragment = adapter.getFragment(index) as ReportDataFragment
                     tabFragment.updateDataTemperature()
                 }
-                2 -> {
+                GRAPH -> {
                     val tabFragment = adapter.getFragment(index) as ReportGraphFragment
                     tabFragment.updateDataTemperature()
                 }
@@ -84,11 +90,11 @@ class DashboardActivity : AppCompatActivity() {
             val adapter = pager.adapter as DashboardPagerAdapter
 
             when(pager.currentItem){
-                1 -> {
+                DATA -> {
                     val tabFragment = adapter.getFragment(index) as ReportDataFragment
                     tabFragment.updateDataMoisture()
                 }
-                2 -> {
+                GRAPH -> {
                     val tabFragment = adapter.getFragment(index) as ReportGraphFragment
                     tabFragment.updateDataMoisture()
                 }

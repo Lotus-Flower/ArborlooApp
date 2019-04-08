@@ -2,6 +2,44 @@
     <string name="app_name">ArborlooApp</string>
     <string name="temperature">Temperature Data</string>
     <string name="moisture">Moisture Data</string>
+    <string name="other_info">Other Info</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="apply">Apply Changes</string>
+    
+    <string name="pit_fullness">Fullness of Pit</string>
+    <string name="pit_drainage">Drainage of Pit</string>
+    <string name="slab_cleanliness">Cleanliness of Slab</string>
+    <string name="covered">Pit Covered</string>
+    <string name="pests">Signs of Pests</string>
+    <string name="smell">Smell</string>
+    <string name="water">Water for Handwashing</string>
+    <string name="soap">Soap for Handwashing</string>
+    <string name="wipe">Wiping Materials</string>
+    <string name="inside_trees">State of Trees in Pit</string>
+    <string name="outside_trees">State of Trees out of Pit</string>
+    
+    <string name="survey_usage">Uses per week?</string>
+    <string name="survey_wash">Hand washing after use?</string>
+    <string name="survey_material">Material used to wash hands?</string>
+    <string name="survey_adult_d">Adults with diarrhea in past week?</string>
+    <string name="survey_child_d">Children with diarrhea in past week?</string>
+    <string name="survey_clinic_visits">Clinic visits this week?</string>
+    <string name="survey_moved">Times Arborloo was moved this month?</string>
+    <string name="survey_person_moved">Who moved it?</string>
+    <string name="survey_calls">Service calls to Belasenp this month?</string>
+    <string name="survey_trees">Trees planted in the pit this month?</string>
+    <string name="survey_cover">Cover material?</string>
+    <string name="survey_cover_freq">How often do you add cover material?</string>
+    <string name="survey_good">What do you like about the Arborloo?</string>
+    <string name="survey_bad">What don\'t you like about the Arborloo?</string>
+    <string name="survey_problems">Problems with the Arborloo?</string>
+    <string name="survey_broken">Arborloo broken?</string>
+    <string name="survey_purchase">Would you buy an arborloo after the study?</string>
+    <string name="survey_cost">How much would you pay?</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

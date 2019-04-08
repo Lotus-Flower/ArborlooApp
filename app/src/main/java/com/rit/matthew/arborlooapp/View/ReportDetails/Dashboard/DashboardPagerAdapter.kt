@@ -9,16 +9,17 @@ import com.rit.matthew.arborlooapp.View.ReportDetails.ReportData.ReportDataFragm
 import com.rit.matthew.arborlooapp.View.ReportDetails.ReportGraph.ReportGraphFragment
 import com.rit.matthew.arborlooapp.View.ReportDetails.ReportInfo.ReportInfoFragment
 import android.view.ViewGroup
-
+import com.rit.matthew.arborlooapp.View.ReportDetails.ReportSurvey.ReportSurveyFragment
 
 
 class DashboardPagerAdapter(private val fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 
     private final val INFO: Int = 0
-    private final val DATA: Int = 1
-    private final val GRAPH: Int = 2
+    private final val SURVEY: Int = 1
+    private final val DATA: Int = 2
+    private final val GRAPH: Int = 3
 
-    private final val numTabs: Int = 3
+    private final val numTabs: Int = 4
 
     var mPageReferenceMap: HashMap<Int, Fragment> = HashMap()
 
@@ -27,6 +28,9 @@ class DashboardPagerAdapter(private val fm: FragmentManager) : FragmentStatePage
         return when (position) {
             INFO -> {
                 ReportInfoFragment()
+            }
+            SURVEY -> {
+                ReportSurveyFragment()
             }
             DATA -> {
                 ReportDataFragment()
@@ -40,9 +44,10 @@ class DashboardPagerAdapter(private val fm: FragmentManager) : FragmentStatePage
 
     override fun getPageTitle(position: Int): CharSequence? {
         return when (position) {
-            0 -> "Info"
-            1 -> "Data"
-            2 -> "Graph"
+            INFO -> "Info"
+            SURVEY -> "Survey"
+            DATA -> "Data"
+            GRAPH -> "Graph"
             else -> {
                 return ""
             }

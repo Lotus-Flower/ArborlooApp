@@ -1,23 +1,21 @@
-package com.rit.matthew.arborlooapp.View.ReportDetails.ReportInfo
+package com.rit.matthew.arborlooapp.View.ReportDetails.ReportSurvey
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
 import com.rit.matthew.arborlooapp.Model.Report
 import com.rit.matthew.arborlooapp.R
-import com.rit.matthew.arborlooapp.databinding.ReportInfoFragmentBinding
+import com.rit.matthew.arborlooapp.databinding.ReportSurveyFragmentBinding
 import kotlinx.android.synthetic.main.report_info_fragment.*
 
-class ReportInfoFragment : Fragment() {
+class ReportSurveyFragment : Fragment() {
 
-    private lateinit var binding: ReportInfoFragmentBinding
+    private lateinit var binding: ReportSurveyFragmentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +24,7 @@ class ReportInfoFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater ,R.layout.report_info_fragment, container,false)
+        binding = DataBindingUtil.inflate(inflater , R.layout.report_survey_fragment, container,false)
         val view: View = binding.root
 
         return view
@@ -47,9 +45,7 @@ class ReportInfoFragment : Fragment() {
     }
 
     fun setEventHandlers() {
-        apply_info_button.setOnClickListener {
-            Log.d("MMMM", fullness_slider.progress.toString())
-        }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

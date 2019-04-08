@@ -322,6 +322,7 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
     }
 
     private fun checkDataExists() : Boolean{
+        Log.d("MMMM", "Got here")
         return sharedPref.getBoolean("hasData", false)
     }
 
