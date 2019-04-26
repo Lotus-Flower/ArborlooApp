@@ -9,15 +9,23 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioGroup
+import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
+import com.rit.matthew.arborlooapp.Database.Entities.InfoDB
 import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
+import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
 import com.rit.matthew.arborlooapp.Model.Report
+import com.rit.matthew.arborlooapp.Model.ReportInfo
 import com.rit.matthew.arborlooapp.R
 import com.rit.matthew.arborlooapp.databinding.ReportInfoFragmentBinding
 import kotlinx.android.synthetic.main.report_info_fragment.*
 
-class ReportInfoFragment : Fragment() {
+class ReportInfoFragment : Fragment(), ReportInfoContract.View {
+
 
     private lateinit var binding: ReportInfoFragmentBinding
+    private lateinit var report: Report
+    private lateinit var presenter: ReportInfoContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,21 +43,82 @@ class ReportInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        presenter = ReportInfoPresenter(this, ReportRepository(appDB = AppDB.getInstance(context)))
+
         setupUI()
     }
 
 
-    fun setupUI() {
-        val report = activity?.intent?.getParcelableExtra("report") as Report
+    private fun setupUI() {
+        report = (activity?.intent?.getParcelableExtra("report") as Report)
         binding.currentReport = report
 
+
         setEventHandlers()
+        setupInfoUI(report.info)
     }
 
-    fun setEventHandlers() {
+    private fun setEventHandlers() {
         apply_info_button.setOnClickListener {
-            Log.d("MMMM", fullness_slider.progress.toString())
+
+            val infoDB = InfoDB()
+
+            infoDB.id = report.info.id
+            infoDB.reportId = report.id
+            infoDB.fullness = fullness_slider.progress
+            infoDB.cleanliness = cleanliness_slider.progress
+            infoDB.smell = smell_slider.progress
+            infoDB.drainage = radioIndexToBoolean(drainage_radio_group.indexOfChild(binding.drainageRadioGroup.findViewById(drainage_radio_group.checkedRadioButtonId)))
+            infoDB.covered = radioIndexToBoolean(cover_radio_group.indexOfChild(binding.coverRadioGroup.findViewById(cover_radio_group.checkedRadioButtonId)))
+            infoDB.water = radioIndexToBoolean(water_radio_group.indexOfChild(binding.waterRadioGroup.findViewById(water_radio_group.checkedRadioButtonId)))
+            infoDB.soap = radioIndexToBoolean(soap_radio_group.indexOfChild(binding.soapRadioGroup.findViewById(soap_radio_group.checkedRadioButtonId)))
+            infoDB.wipe = radioIndexToBoolean(wipe_radio_group.indexOfChild(binding.wipeRadioGroup.findViewById(wipe_radio_group.checkedRadioButtonId)))
+            infoDB.pests = pests_edit_text.text.toString()
+            infoDB.treesInside = inside_trees_edit_text.text.toString()
+            infoDB.treesOutside = outside_trees_edit_text.text.toString()
+            infoDB.other = other_info_edit_text.text.toString()
+
+            presenter.updateInfo(infoDB)
         }
+    }
+
+    override fun setupInfoUI(info: ReportInfo){
+
+        info.fullness?.toFloat()?.let { fullness_slider.setProgress(it) }
+        info.cleanliness?.toFloat()?.let { cleanliness_slider.setProgress(it) }
+        info.smell?.toFloat()?.let { smell_slider.setProgress(it) }
+
+        setRadioButtonYesNo(info.drainage, binding.drainageRadioGroup)
+        setRadioButtonYesNo(info.covered, binding.coverRadioGroup)
+        setRadioButtonYesNo(info.water, binding.waterRadioGroup)
+        setRadioButtonYesNo(info.soap, binding.soapRadioGroup)
+        setRadioButtonYesNo(info.wipe, binding.wipeRadioGroup)
+
+        pests_edit_text.setText(info.pests)
+        inside_trees_edit_text.setText(info.treesInside)
+        outside_trees_edit_text.setText(info.treesOutside)
+        other_info_edit_text.setText(info.other)
+
+    }
+
+    override fun setInfo(info: ReportInfo) {
+        (activity?.intent?.getParcelableExtra("report") as Report).info = info
+    }
+
+    private fun setRadioButtonYesNo(data: Boolean?, radioGroup: RadioGroup){
+        if(data == true){
+            radioGroup.check(radioGroup.getChildAt(0).id)
+        }else if(data == false){
+            radioGroup.check(radioGroup.getChildAt(1).id)
+        }
+    }
+
+    private fun radioIndexToBoolean(index: Int): Boolean{
+        return index == 0
+    }
+
+    private fun calculateDataFromProgress(progress: Int?, max: Int): Int? {
+        return (progress?.times(100))?.div(5)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

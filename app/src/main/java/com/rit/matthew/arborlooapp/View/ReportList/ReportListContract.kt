@@ -4,6 +4,8 @@ import com.rit.matthew.arborlooapp.Base.View.BasePresenter
 import com.rit.matthew.arborlooapp.Base.View.BaseView
 import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
 import com.rit.matthew.arborlooapp.Model.ReportData
+import com.rit.matthew.arborlooapp.Model.ReportInfo
+import com.rit.matthew.arborlooapp.Model.ReportSurvey
 
 interface ReportListContract {
 
@@ -11,7 +13,7 @@ interface ReportListContract {
 
         fun displayReportList(reports: ArrayList<ReportDB>)
 
-        fun setData(tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>)
+        fun setData(reportDB: ReportDB, info: ReportInfo, survey: ReportSurvey, tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>)
 
     }
 
@@ -19,7 +21,9 @@ interface ReportListContract {
 
         fun setupReportList()
 
-        fun getReportData(reportId: Long?)
+        fun getReportData(report: ReportDB)
+
+        fun createReport(reportName: String)
 
     }
 

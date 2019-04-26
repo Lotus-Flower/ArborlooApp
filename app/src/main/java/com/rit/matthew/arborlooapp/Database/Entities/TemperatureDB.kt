@@ -7,8 +7,10 @@ import org.threeten.bp.OffsetDateTime
 @Entity(tableName = "TemperatureDB", foreignKeys = arrayOf(ForeignKey(entity = ReportDB::class, parentColumns = arrayOf("id"), childColumns = arrayOf("reportId"), onDelete = ForeignKey.CASCADE)))
 @TypeConverters(DataTypeConverter::class)
 class TemperatureDB {
+
     @PrimaryKey(autoGenerate = true)
-    var id: Long? = null
+    @ColumnInfo(name = "id")
+    var tag_id: Long? = null
 
     @ColumnInfo(name = "reportId")
     var reportId: Long? = null

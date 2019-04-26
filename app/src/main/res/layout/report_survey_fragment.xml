@@ -7,17 +7,446 @@
             type="com.rit.matthew.arborlooapp.Model.Report">
         </variable>
     </data>
-
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
+        android:layout_height="wrap_content">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="40dp"
+                android:paddingEnd="40dp"
+                android:paddingStart="40dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/survey_clean"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <com.warkiz.widget.IndicatorStayLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp">
+
+                    <com.warkiz.widget.IndicatorSeekBar
+                        android:id="@+id/survey_clean_slider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:isb_show_indicator="rounded_rectangle"
+                        app:isb_show_tick_marks_type="oval"
+                        app:isb_show_tick_texts="true"
+                        app:isb_tick_texts_array="@array/medium_range_array"
+                        app:isb_ticks_count="9" />
+                </com.warkiz.widget.IndicatorStayLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/survey_adult_d"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <com.warkiz.widget.IndicatorStayLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp">
+
+                    <com.warkiz.widget.IndicatorSeekBar
+                        android:id="@+id/survey_adult_slider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:isb_show_indicator="rounded_rectangle"
+                        app:isb_show_tick_marks_type="oval"
+                        app:isb_show_tick_texts="true"
+                        app:isb_tick_texts_array="@array/medium_range_array"
+                        app:isb_ticks_count="9" />
+                </com.warkiz.widget.IndicatorStayLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/survey_child_d"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <com.warkiz.widget.IndicatorStayLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp">
+
+                    <com.warkiz.widget.IndicatorSeekBar
+                        android:id="@+id/survey_child_slider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:isb_show_indicator="rounded_rectangle"
+                        app:isb_show_tick_marks_type="oval"
+                        app:isb_show_tick_texts="true"
+                        app:isb_tick_texts_array="@array/medium_range_array"
+                        app:isb_ticks_count="9" />
+                </com.warkiz.widget.IndicatorStayLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/survey_calls"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <com.warkiz.widget.IndicatorStayLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp">
+
+                    <com.warkiz.widget.IndicatorSeekBar
+                        android:id="@+id/survey_calls_slider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:isb_show_indicator="rounded_rectangle"
+                        app:isb_show_tick_marks_type="oval"
+                        app:isb_show_tick_texts="true"
+                        app:isb_tick_texts_array="@array/medium_range_array"
+                        app:isb_ticks_count="9" />
+                </com.warkiz.widget.IndicatorStayLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/survey_trees"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <com.warkiz.widget.IndicatorStayLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp">
+
+                    <com.warkiz.widget.IndicatorSeekBar
+                        android:id="@+id/survey_trees_slider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:isb_show_indicator="rounded_rectangle"
+                        app:isb_show_tick_marks_type="oval"
+                        app:isb_show_tick_texts="true"
+                        app:isb_tick_texts_array="@array/medium_range_array"
+                        app:isb_ticks_count="9" />
+                </com.warkiz.widget.IndicatorStayLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/moving"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/survey_moved"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                    <com.warkiz.widget.IndicatorStayLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp">
+
+                        <com.warkiz.widget.IndicatorSeekBar
+                            android:id="@+id/survey_moved_slider"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:isb_show_indicator="rounded_rectangle"
+                            app:isb_show_tick_marks_type="oval"
+                            app:isb_show_tick_texts="true"
+                            app:isb_tick_texts_array="@array/medium_range_array"
+                            app:isb_ticks_count="9" />
+                    </com.warkiz.widget.IndicatorStayLayout>
+
+                    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:labelText="@string/survey_person_moved">
+
+                        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                            android:id="@+id/survey_moved_edit_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hand_washing"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/border"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp"
+                    >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/survey_wash"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                    <RadioGroup
+                        android:id="@+id/survey_wash_radio_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            android:text="@string/yes" />
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            android:text="@string/no" />
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            android:text="@string/sometimes" />
+                    </RadioGroup>
+
+                    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:labelText="@string/survey_material">
+
+                        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                            android:id="@+id/survey_material_edit_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/covering"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:labelText="@string/survey_cover">
+
+                        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                            android:id="@+id/survey_cover_edit_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/survey_cover_freq"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                    <RadioGroup
+                        android:id="@+id/survey_cover_freq_radio_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            android:text="@string/every_use" />
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            android:text="@string/every_day" />
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            android:text="@string/not_often" />
+                    </RadioGroup>
+                </LinearLayout>
+
+                <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:labelText="@string/survey_clinic_visits">
+
+                    <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/survey_clinic_visits_edit_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+                <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:labelText="@string/survey_good">
+
+                    <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/survey_good_edit_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+                <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:labelText="@string/survey_bad">
+
+                    <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/survey_bad_edit_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+                <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:labelText="@string/survey_broken">
+
+                    <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/survey_broken_edit_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+                <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:labelText="@string/survey_problems">
+
+                    <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+                        android:id="@+id/survey_problems_edit_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/purchasing"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/survey_purchase"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                    <RadioGroup
+                        android:id="@+id/survey_purchase_radio_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            android:text="@string/yes" />
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            android:text="@string/no" />
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            android:text="@string/maybe" />
+
+                    </RadioGroup>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/survey_cost"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                    <com.warkiz.widget.IndicatorStayLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.warkiz.widget.IndicatorSeekBar
+                            android:id="@+id/survey_cost_slider"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:isb_show_indicator="rounded_rectangle"
+                            app:isb_show_tick_marks_type="oval"
+                            app:isb_show_tick_texts="true"
+                            app:isb_tick_texts_array="@array/cost_range_array"
+                            app:isb_ticks_count="5" />
+                    </com.warkiz.widget.IndicatorStayLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+        <Button
+            android:id="@+id/apply_survey_button"
+            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@string/apply"/>
 
-
-
-        </LinearLayout>
-    </ScrollView>
+    </RelativeLayout>
 </layout>

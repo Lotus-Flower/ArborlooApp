@@ -12,8 +12,9 @@ import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
 import com.rit.matthew.arborlooapp.R
 import kotlinx.android.synthetic.main.report_list_recycler.view.*
 
-class ReportListAdapter(val reports: ArrayList<ReportDB>, val context: Context?, val baseCallback: BaseCallback) : RecyclerView.Adapter<ReportListAdapter.ViewHolder>(){
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+class ReportListAdapter(val reports: ArrayList<ReportDB>, val context: Context?, val callback: BaseCallback) : RecyclerView.Adapter<ReportListAdapter.ViewHolder>(){
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.report_list_recycler, parent, false))
     }
 
@@ -27,11 +28,11 @@ class ReportListAdapter(val reports: ArrayList<ReportDB>, val context: Context?,
         return reports.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        holder?.titleTextView?.text = reports[position].name as CharSequence
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.titleTextView.text = reports[position].name as CharSequence
 
-        holder?.linearLayout?.setOnClickListener({
-            baseCallback.onSuccess(mutableListOf(reports[position]))
+        holder.linearLayout.setOnClickListener({
+            callback.onSuccess(mutableListOf(reports[position]))
         })
     }
 

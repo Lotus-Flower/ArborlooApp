@@ -2,9 +2,7 @@ package com.rit.matthew.arborlooapp.Database.DAO
 
 import android.arch.persistence.room.*
 import android.arch.persistence.room.OnConflictStrategy.REPLACE
-import com.rit.matthew.arborlooapp.Database.Entities.MoistureDB
-import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
-import com.rit.matthew.arborlooapp.Database.Entities.TemperatureDB
+import com.rit.matthew.arborlooapp.Database.Entities.*
 import com.rit.matthew.arborlooapp.Database.TypeConverter.DataTypeConverter
 import com.rit.matthew.arborlooapp.Database.TypeConverter.ReportTypeConverter
 
@@ -24,6 +22,12 @@ interface ReportDAO{
     @Query("SELECT * FROM MoistureDB WHERE reportId=:reportId ORDER BY datetime(dateTime)")
     fun getMoistureData(reportId: Long?): MutableList<MoistureDB>
 
+    @Query("SELECT * FROM InfoDB WHERE reportId=:reportId ORDER BY id")
+    fun getInfo(reportId: Long?): InfoDB
+
+    @Query("SELECT * FROM SurveyDB WHERE reportId=:reportId LIMIT 1")
+    fun getSurvey(reportId: Long?): SurveyDB
+
     @Insert(onConflict = REPLACE)
     fun insertReport(reportDB: ReportDB)
 
@@ -33,6 +37,18 @@ interface ReportDAO{
     @Insert(onConflict = REPLACE)
     fun insertMoist(moistureDB: MoistureDB)
 
+    @Insert(onConflict = REPLACE)
+    fun insertInfo(infoDB: InfoDB)
+
+    @Insert(onConflict = REPLACE)
+    fun insertSurvey(surveyDB: SurveyDB)
+
+    @Update
+    fun updateInfo(infoDB: InfoDB)
+
+    @Update
+    fun updateSurvey(surveyDB: SurveyDB)
+
     @Delete
     fun deleteReport(reportDB: ReportDB)
 
@@ -41,6 +57,12 @@ interface ReportDAO{
 
     @Delete
     fun deleteMoist(moistureDB: MoistureDB)
+
+    @Delete
+    fun deleteInfo(infoDB: InfoDB)
+
+    @Delete
+    fun deleteSurvey(surveyDB: SurveyDB)
 
     @Query("DELETE FROM ReportDB")
     fun deleteAllReports()

@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import com.rit.matthew.arborlooapp.Model.Report
 import com.rit.matthew.arborlooapp.R
 import com.rit.matthew.arborlooapp.View.ReportDetails.ReportData.ReportDataFragment
 import com.rit.matthew.arborlooapp.View.ReportDetails.ReportGraph.ReportGraphFragment
@@ -28,7 +29,9 @@ class DashboardActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbar.title = "Report Details"
+
+        val report: Report = intent.getParcelableExtra("report")
+        toolbar.title = report.name
 
         setupUI()
     }

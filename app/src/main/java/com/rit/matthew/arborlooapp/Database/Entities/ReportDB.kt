@@ -15,6 +15,4 @@ class ReportDB {
     @ColumnInfo(name = "name")
     var name: String? = null
 
-    @ColumnInfo(name = "info")
-    var info: String? = null
 }

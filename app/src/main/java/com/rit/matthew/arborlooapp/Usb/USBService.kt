@@ -15,6 +15,7 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import com.felhr.usbserial.CDCSerialDevice
+import com.felhr.usbserial.FTDISerialDevice
 import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
 import com.rit.matthew.arborlooapp.Base.Callback.USBCallback
@@ -39,7 +40,7 @@ class UsbService : Service() {
      */
     private val mCallback = UsbSerialInterface.UsbReadCallback { arg0 ->
         try {
-            val data = String(arg0, Charsets.UTF_8)
+            val data = String(arg0, Charsets.ISO_8859_1)
             if (mHandler != null)
                 mHandler!!.obtainMessage(MESSAGE_FROM_SERIAL_PORT, data).sendToTarget()
         } catch (e: UnsupportedEncodingException) {

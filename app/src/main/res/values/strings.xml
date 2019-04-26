@@ -6,6 +6,7 @@
 
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="maybe">Maybe</string>
 
     <string name="apply">Apply Changes</string>
     
@@ -21,13 +22,13 @@
     <string name="inside_trees">State of Trees in Pit</string>
     <string name="outside_trees">State of Trees out of Pit</string>
     
-    <string name="survey_usage">Uses per week?</string>
+    <string name="survey_clean">Cleanings per week?</string>
     <string name="survey_wash">Hand washing after use?</string>
     <string name="survey_material">Material used to wash hands?</string>
     <string name="survey_adult_d">Adults with diarrhea in past week?</string>
     <string name="survey_child_d">Children with diarrhea in past week?</string>
     <string name="survey_clinic_visits">Clinic visits this week?</string>
-    <string name="survey_moved">Times Arborloo was moved this month?</string>
+    <string name="survey_moved">Times Arborloo moved this month?</string>
     <string name="survey_person_moved">Who moved it?</string>
     <string name="survey_calls">Service calls to Belasenp this month?</string>
     <string name="survey_trees">Trees planted in the pit this month?</string>
@@ -40,7 +41,37 @@
     <string name="survey_purchase">Would you buy an arborloo after the study?</string>
     <string name="survey_cost">How much would you pay?</string>
 
+    <string name="every_use">Every Use</string>
+    <string name="every_day">Every Day</string>
+    <string name="not_often">Less</string>
+
+    <string name="export">Export</string>
+
+    <string-array name="medium_range_array">
+        <item>"0 "</item>
+        <item>"1 "</item>
+        <item>"2 "</item>
+        <item>"3 "</item>
+        <item>"4 "</item>
+        <item>"5 "</item>
+        <item>"6 "</item>
+        <item>"7 "</item>
+        <item>8+</item>
+    </string-array>
+
+    <string-array name="cost_range_array">
+        <item>"$500"</item>
+        <item>"$750"</item>
+        <item>"$1000"</item>
+        <item>"$2000"</item>
+        <item>"$3000"</item>
+    </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="covering">Covering</string>
+    <string name="moving">Moving</string>
+    <string name="hand_washing">Hand Washing</string>
+    <string name="purchasing">Purchasing</string>
+    <string name="sometimes">Sometimes</string>
 </resources>

@@ -13,6 +13,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
+import com.rit.matthew.arborlooapp.Model.Report
 import com.rit.matthew.arborlooapp.Model.ReportData
 import com.rit.matthew.arborlooapp.R
 import kotlinx.android.synthetic.main.dashboard_activity.*
@@ -40,10 +41,10 @@ class ReportGraphFragment : Fragment(){
     }
 
     private fun setupUI(){
-        tempData = activity?.intent?.getParcelableArrayListExtra("temp")
-        moistData = activity?.intent?.getParcelableArrayListExtra("moist")
+        tempData = activity?.intent?.getParcelableExtra<Report>("report")?.temperatureData
+        moistData = activity?.intent?.getParcelableExtra<Report>("report")?.moistureData
 
-        getEntries(tempData!!, "Temperature")
+        tempData?.let { getEntries(it, "Temperature") }
     }
 
     private fun getEntries(reportData: ArrayList<ReportData>, title: String){
@@ -86,11 +87,11 @@ class ReportGraphFragment : Fragment(){
 
 
     fun updateDataTemperature(){
-        getEntries(tempData!!, "Temperature")
+        tempData?.let { getEntries(it, "Temperature") }
     }
 
     fun updateDataMoisture(){
-        getEntries(moistData!!, "Moisture")
+        moistData?.let { getEntries(it, "Moisture") }
     }
 
 }

@@ -6,12 +6,10 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import android.content.Context
 import com.rit.matthew.arborlooapp.Database.DAO.ReportDAO
-import com.rit.matthew.arborlooapp.Database.Entities.MoistureDB
-import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
-import com.rit.matthew.arborlooapp.Database.Entities.TemperatureDB
+import com.rit.matthew.arborlooapp.Database.Entities.*
 import com.rit.matthew.arborlooapp.Database.TypeConverter.ReportTypeConverter
 
-@Database(entities = [(ReportDB::class), (TemperatureDB::class), (MoistureDB::class)], version = 1)
+@Database(entities = [(ReportDB::class), (TemperatureDB::class), (MoistureDB::class), (InfoDB::class), (SurveyDB::class)], version = 1)
 @TypeConverters(ReportTypeConverter::class)
 abstract class AppDB : RoomDatabase() {
 

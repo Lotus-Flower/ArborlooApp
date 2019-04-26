@@ -1,9 +1,6 @@
 package com.rit.matthew.arborlooapp.View.ReportList
 
-import android.app.PendingIntent
 import android.content.*
-import android.hardware.usb.UsbDevice
-import android.hardware.usb.UsbManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -14,9 +11,6 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.rit.matthew.arborlooapp.Base.Callback.BaseCallback
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
-import com.rit.matthew.arborlooapp.Database.Entities.MoistureDB
-import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
-import com.rit.matthew.arborlooapp.Database.Entities.TemperatureDB
 import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
 import com.rit.matthew.arborlooapp.Model.Report
 import com.rit.matthew.arborlooapp.Model.ReportData
@@ -27,26 +21,19 @@ import org.threeten.bp.Instant
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
 import java.util.*
-import android.hardware.usb.UsbDeviceConnection
-import android.hardware.usb.UsbInterface
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import android.hardware.usb.UsbConstants
-import android.hardware.usb.UsbEndpoint
-import android.opengl.Visibility
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
+import android.view.Menu
 import android.widget.Button
 import android.widget.Toast
-import com.felhr.usbserial.UsbSerialDevice
-import com.felhr.usbserial.UsbSerialInterface
+import com.rengwuxian.materialedittext.MaterialEditText
+import com.rit.matthew.arborlooapp.Database.Entities.*
+import com.rit.matthew.arborlooapp.Model.ReportInfo
+import com.rit.matthew.arborlooapp.Model.ReportSurvey
 import com.rit.matthew.arborlooapp.Usb.UsbService
-import kotlinx.android.synthetic.main.create_report_view.*
-import kotlinx.android.synthetic.main.dashboard_activity.*
-import java.io.UnsupportedEncodingException
 import java.lang.ref.WeakReference
-import java.nio.charset.Charset
 
 
 class ReportListActivity : AppCompatActivity(), ReportListContract.View {
@@ -56,22 +43,8 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
     private lateinit var adapter: ReportListAdapter
 
     private lateinit var report: Report
-    private val tempData: ArrayList<ReportData> = ArrayList()
-    private val moistData: ArrayList<ReportData> = ArrayList()
 
     private lateinit var sharedPref: SharedPreferences
-
-    private lateinit var usbManager: UsbManager
-    private lateinit var permissionIntent: PendingIntent
-    private lateinit var usbDeviceConnection: UsbDeviceConnection
-    private lateinit var usbInterface: UsbInterface
-    private lateinit var endPointRead: UsbEndpoint
-    private var packetSize: Int = 0
-    private val uiHandler = Handler()
-
-    private lateinit var serialPort: UsbSerialDevice
-
-    private val ACTION_USB_PERMISSION = "USB_PERMISSION"
 
     private var usbService: UsbService? = null
     private lateinit var mHandler: MyHandler
@@ -83,41 +56,6 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
         override fun onServiceDisconnected(arg0: ComponentName) {
             usbService = null
-        }
-    }
-
-    private var readCallback: UsbSerialInterface.UsbReadCallback = UsbSerialInterface.UsbReadCallback { arg0 ->
-        //Defining a Callback which triggers whenever data is read.
-        var data: String? = null
-        try {
-            data = String(arg0, Charsets.UTF_8)
-            writeButton(data)
-        } catch (e: UnsupportedEncodingException) {
-            e.printStackTrace()
-        }
-    }
-
-    private val usbReceiver = object : BroadcastReceiver() {
-
-        override fun onReceive(context: Context, intent: Intent) {
-            if (ACTION_USB_PERMISSION == intent.action) {
-                val device: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
-
-                if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                    usbDeviceConnection = usbManager.openDevice(device);
-                    serialPort = UsbSerialDevice.createUsbSerialDevice(device, usbDeviceConnection)
-                    if (serialPort.open()) {
-                        serialPort.setBaudRate(9600)
-                        serialPort.setDataBits(UsbSerialInterface.DATA_BITS_8)
-                        serialPort.setStopBits(UsbSerialInterface.STOP_BITS_1)
-                        serialPort.setParity(UsbSerialInterface.PARITY_NONE)
-                        serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF)
-                        serialPort.read(readCallback)
-
-                        showData("gottee")
-                    }
-                }
-            }
         }
     }
 
@@ -141,15 +79,13 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.report_list_activity)
+        setSupportActionBar(toolbar_report_list)
+
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         presenter = ReportListPresenter(this, ReportRepository(appDB = AppDB.getInstance(this)))
 
         sharedPref = this.getPreferences(Context.MODE_PRIVATE)
-
-        /*permissionIntent = PendingIntent.getBroadcast(this, 0, Intent(ACTION_USB_PERMISSION), 0)
-
-        val filter = IntentFilter(ACTION_USB_PERMISSION)
-        registerReceiver(usbReceiver, filter)*/
 
         if(!checkDataExists()){
             writeTestData()
@@ -158,8 +94,15 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
         mHandler = MyHandler(this)
 
+        test_box.visibility = View.GONE
+
         setupUI()
         setEventHandlers()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.settings_menu, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onResume() {
@@ -206,9 +149,12 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         adapter = ReportListAdapter(ArrayList(), this, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
                 val reportDB = data!![0] as ReportDB
-                report = Report.fromReportDB(reportDB)
+                //report = Report.constructReportfromDB(reportDB)
 
-                presenter.getReportData(reportDB.id)
+                presenter.getReportData(reportDB)
+            }
+            override fun onFailure() {
+
             }
         })
 
@@ -226,46 +172,11 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
             //showUsbList()
         })
 
-        fix.setOnClickListener {
+        /*fix.setOnClickListener {
             val string = "hey"
             usbService!!.write(string.toByteArray())
-        }
-        fix.visibility = View.GONE
-    }
-
-    private fun showUsbList(){
-
-        usbManager = getSystemService(Context.USB_SERVICE) as UsbManager
-
-        val deviceHashMap: HashMap<String, UsbDevice> = HashMap()
-        for (usbDevice in usbManager.deviceList.values) {
-            deviceHashMap.put(usbDevice.deviceName, usbDevice)
-        }
-
-        var selectedItem : UsbDevice
-
-        MaterialDialog.Builder(this)
-                .title("USB Devices")
-                .positiveText("Confirm")
-                .negativeText("Cancel")
-                .items(deviceHashMap.keys)
-                .itemsCallbackSingleChoice(-1, object : MaterialDialog.ListCallbackSingleChoice {
-                    override fun onSelection(dialog: MaterialDialog?, itemView: View?, position: Int, text: CharSequence?): Boolean {
-                        dialog!!.selectedIndex = position
-                        return true
-                    }
-                })
-                .onPositive(object : MaterialDialog.SingleButtonCallback{
-                    override fun onClick(dialog: MaterialDialog, which: DialogAction) {
-                        usbManager.requestPermission(deviceHashMap.get(dialog.items!!.get(dialog.selectedIndex)), permissionIntent)
-                        val text = "Sending permission intent"
-                        val duration = Toast.LENGTH_SHORT
-
-                        val toast = Toast.makeText(applicationContext, text, duration)
-                        toast.show()
-                    }
-                })
-                .show()
+        }*/
+        //fix.visibility = View.GONE
     }
 
     private fun showCreateReportDialog() {
@@ -276,17 +187,20 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
                 .negativeText("Cancel")
                 .onPositive(object : MaterialDialog.SingleButtonCallback{
                     override fun onClick(dialog: MaterialDialog, which: DialogAction) {
+                        val reportNameEditText = dialog.view.findViewById(R.id.report_name_edit_text) as MaterialEditText
 
+                        presenter.createReport(reportNameEditText.text.toString())
                     }
 
                 })
 
         val sensorDataButton = createDialogBuilder.build().customView!!.findViewById<Button>(R.id.button_sensor_data)
         sensorDataButton.setOnClickListener {
-            val string = "Test Sensor Data"
+            val string = "432143214321"
             usbService!!.write(string.toByteArray())
         }
 
+        //showData("1234")
         createDialogBuilder.show()
 
     }
@@ -295,22 +209,17 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         adapter.updateDataSet(reports)
     }
 
-    override fun setData(tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>) {
+    override fun setData(reportDB: ReportDB, info: ReportInfo, survey: ReportSurvey, tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>) {
 
-        this.tempData.clear()
-        this.moistData.clear()
+        report = Report.constructReportfromDB(reportDB, info, survey, tempData, moistData)
 
-        this.tempData.addAll(tempData)
-        this.moistData.addAll(moistData)
-
-        switchToReportDetails()
+        switchToReportDetails(survey)
     }
 
-    private fun switchToReportDetails(){
+    private fun switchToReportDetails(survey: ReportSurvey){
         val intent = Intent(this, DashboardActivity::class.java)
         intent.putExtra("report", report)
-        intent.putExtra("temp", tempData)
-        intent.putExtra("moist", moistData)
+        intent.putExtra("survey", survey)
         startActivity(intent)
     }
 
@@ -322,7 +231,6 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
     }
 
     private fun checkDataExists() : Boolean{
-        Log.d("MMMM", "Got here")
         return sharedPref.getBoolean("hasData", false)
     }
 
@@ -331,22 +239,28 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         val reportDB = ReportDB()
 
         reportDB.name = "Arborloo 1"
-        reportDB.info = "Test Information"
 
         repo.insertReport(reportDB, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
                 Log.d("MMMM", "Inserted")
+            }
+            override fun onFailure() {
+
             }
         })
 
         val reportDB1 = ReportDB()
 
         reportDB1.name = "Arborloo 2"
-        reportDB1.info = "Test Information 2"
 
         repo.insertReport(reportDB1, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
                 Log.d("MMMM", "Inserted")
+                writeSurveyData(repo)
+                writeInfoData(repo)
+            }
+            override fun onFailure() {
+
             }
         })
 
@@ -385,22 +299,151 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
                 override fun onSuccess(data: MutableList<*>?) {
 
                 }
+                override fun onFailure() {
+
+                }
             })
 
             repo.insertMoist(newMoist, object : BaseCallback{
                 override fun onSuccess(data: MutableList<*>?) {
 
                 }
+                override fun onFailure() {
+
+                }
             })
         }
     }
 
+    private fun writeSurveyData(repo: ReportRepository){
+        val surveyDB = SurveyDB()
+        //= ReportSurvey(8, "yes", "water", 8, 8, "yes", 8, "father", 8, 8, "ash", "Every Day", "Everything", "Nothing", "None", "Nothing", "Yes", 300)
+
+        surveyDB.reportId = 1
+        surveyDB.clean = 0
+        surveyDB.wash = "Yes"
+        surveyDB.material = "Water"
+        surveyDB.adult = 1
+        surveyDB.child = 2
+        surveyDB.clinic = "Yes"
+        surveyDB.move = 3
+        surveyDB.personMove = "Father"
+        surveyDB.calls = 4
+        surveyDB.trees = 5
+        surveyDB.cover = "Ash"
+        surveyDB.coverFreq = "Every Day"
+        surveyDB.good = "Everything"
+        surveyDB.bad = "Nothing"
+        surveyDB.problems = "None"
+        surveyDB.broken = "Nothing"
+        surveyDB.purchase = "Yes"
+        surveyDB.cost = 750
+
+        val surveyDB2 = SurveyDB()
+        //= ReportSurvey(8, "yes", "water", 8, 8, "yes", 8, "father", 8, 8, "ash", "Every Day", "Everything", "Nothing", "None", "Nothing", "Yes", 300)
+
+        surveyDB2.reportId = 2
+        surveyDB2.clean = 6
+        surveyDB2.wash = "Yes"
+        surveyDB2.material = "Water"
+        surveyDB2.adult = 7
+        surveyDB2.child = 8
+        surveyDB2.clinic = "Yes"
+        surveyDB2.move = 8
+        surveyDB2.personMove = "Mother"
+        surveyDB2.calls = 8
+        surveyDB2.trees = 8
+        surveyDB2.cover = "Ash"
+        surveyDB2.coverFreq = "Every Day"
+        surveyDB2.good = "Everything"
+        surveyDB2.bad = "Nothing"
+        surveyDB2.problems = "None"
+        surveyDB2.broken = "Nothing"
+        surveyDB2.purchase = "Yes"
+        surveyDB2.cost = 1000
+
+        repo.insertSurvey(surveyDB, object : BaseCallback{
+            override fun onSuccess(data: MutableList<*>?) {
+                Log.d("MMMM", "inserted")
+            }
+            override fun onFailure() {
+
+            }
+
+        })
+
+        repo.insertSurvey(surveyDB2, object : BaseCallback{
+            override fun onSuccess(data: MutableList<*>?) {
+                Log.d("MMMM", "inserted")
+            }
+            override fun onFailure() {
+
+            }
+
+        })
+    }
+
+    private fun writeInfoData(repo: ReportRepository){
+        val infoDB = InfoDB()
+
+        infoDB.reportId = 1
+        infoDB.fullness = 1
+        infoDB.drainage = true
+        infoDB.cleanliness = 2
+        infoDB.covered = true
+        infoDB.pests = "None"
+        infoDB.smell = 3
+        infoDB.water = true
+        infoDB.soap = true
+        infoDB.wipe = true
+        infoDB.treesInside = "Some"
+        infoDB.treesOutside = "Some"
+        infoDB.other = "None"
+
+        val infoDB2 = InfoDB()
+
+        infoDB2.reportId = 2
+        infoDB2.fullness = null
+        infoDB2.drainage = true
+        infoDB2.cleanliness = 4
+        infoDB2.covered = true
+        infoDB2.pests = "None"
+        infoDB2.smell = 5
+        infoDB2.water = true
+        infoDB2.soap = true
+        infoDB2.wipe = true
+        infoDB2.treesInside = "Some"
+        infoDB2.treesOutside = "Some"
+        infoDB2.other = "None"
+
+        repo.insertInfo(infoDB, object : BaseCallback{
+            override fun onSuccess(data: MutableList<*>?) {
+                Log.d("MMMM", "inserted")
+            }
+            override fun onFailure() {
+
+            }
+
+        })
+
+        repo.insertInfo(infoDB2, object : BaseCallback{
+            override fun onSuccess(data: MutableList<*>?) {
+                Log.d("MMMM", "inserted")
+            }
+            override fun onFailure() {
+
+            }
+
+        })
+    }
+
     private fun showData(data: String){
         Toast.makeText(this, data, Toast.LENGTH_LONG).show()
+        //test_box.append(data)
     }
 
     private fun writeButton(data: String){
-        fix.text = data
+        //fix.text = data
     }
 
     override fun onDestroy() {
@@ -412,17 +455,14 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
      * This handler will be passed to UsbService. Data received from serial port is displayed through this handler
      */
     private class MyHandler(activity: ReportListActivity) : Handler() {
-        private val mActivity: WeakReference<ReportListActivity>
-
-        init {
-            mActivity = WeakReference<ReportListActivity>(activity)
-        }
+        private val mActivity: WeakReference<ReportListActivity> = WeakReference<ReportListActivity>(activity)
 
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 UsbService.MESSAGE_FROM_SERIAL_PORT -> {
                     val data = msg.obj as String
-                    Toast.makeText(mActivity.get(), data, Toast.LENGTH_LONG).show()
+                    mActivity.get()!!.showData(data)
+                    //Toast.makeText(mActivity.get(), data, Toast.LENGTH_LONG).show()
                 }
             }
         }

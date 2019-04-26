@@ -4,23 +4,19 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
-import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
 import com.rit.matthew.arborlooapp.Model.Report
 import com.rit.matthew.arborlooapp.Model.ReportData
 
 import com.rit.matthew.arborlooapp.R
 import kotlinx.android.synthetic.main.report_data_fragment.*
 
-class ReportDataFragment : Fragment(), ReportDataContract.View{
+class ReportDataFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     lateinit var adapter: ReportDataListAdapter
-    private lateinit var presenter: ReportDataPresenter
 
     private lateinit var report:Report
     private var tempData: ArrayList<ReportData>? = ArrayList()
@@ -28,8 +24,6 @@ class ReportDataFragment : Fragment(), ReportDataContract.View{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        presenter = ReportDataPresenter(this, ReportRepository(appDB = AppDB.getInstance(context)))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -46,8 +40,8 @@ class ReportDataFragment : Fragment(), ReportDataContract.View{
 
     fun setupUI(){
         report = activity?.intent?.getParcelableExtra("report") as Report
-        tempData = activity?.intent?.getParcelableArrayListExtra("temp")
-        moistData = activity?.intent?.getParcelableArrayListExtra("moist")
+        tempData = activity?.intent?.getParcelableExtra<Report>("report")?.temperatureData
+        moistData = activity?.intent?.getParcelableExtra<Report>("report")?.moistureData
 
         recyclerView = recycler_view_report_data
 
@@ -75,7 +69,7 @@ class ReportDataFragment : Fragment(), ReportDataContract.View{
         displayDataList(moistData)
     }
 
-    override fun displayDataList(data: ArrayList<ReportData>?) {
+    fun displayDataList(data: ArrayList<ReportData>?) {
         adapter.updateDataSet(data)
     }
 
