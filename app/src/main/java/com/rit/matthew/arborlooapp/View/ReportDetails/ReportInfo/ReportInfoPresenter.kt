@@ -6,7 +6,7 @@ import com.rit.matthew.arborlooapp.Database.Entities.InfoDB
 import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
 import com.rit.matthew.arborlooapp.Model.ReportInfo
 
-class ReportInfoPresenter(var view: ReportInfoContract.View, val reportRepository: ReportRepository) : ReportInfoContract.Presenter{
+class ReportInfoPresenter(var view: ReportInfoContract.View?, val reportRepository: ReportRepository) : ReportInfoContract.Presenter{
 
     override fun updateInfo(infoDB: InfoDB) {
         reportRepository.updateInfo(infoDB, object : BaseCallback{
@@ -27,17 +27,17 @@ class ReportInfoPresenter(var view: ReportInfoContract.View, val reportRepositor
             override fun onSuccess(data: MutableList<*>?) {
                 val info = ReportInfo.fromInfoDB(data!![0] as InfoDB)
 
-                for(surveyData in (data as ArrayList<InfoDB>)){
-                    Log.d("MMMM", "entry")
-                }
-
-                view.setInfo(info)
+                view?.setInfo(info)
             }
             override fun onFailure() {
                 Log.d("MMMM", "Failure")
             }
 
         })
+    }
+
+    override fun destroy() {
+        view = null
     }
 
 }

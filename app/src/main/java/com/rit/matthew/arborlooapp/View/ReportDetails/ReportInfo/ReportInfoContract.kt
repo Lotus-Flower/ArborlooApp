@@ -9,13 +9,13 @@ interface ReportInfoContract {
 
         fun setInfo(info: ReportInfo)
 
-        fun setupInfoUI(info: ReportInfo)
-
     }
 
     interface Presenter{
 
         fun updateInfo(infoDB: InfoDB)
+
+        fun destroy()
 
     }
 

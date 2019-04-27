@@ -5,7 +5,7 @@ import com.rit.matthew.arborlooapp.Database.Entities.SurveyDB
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class ReportSurvey(var clean: Int?, var wash: String?, var material: String?,
+class ReportSurvey(var id: Long?, var clean: Int?, var wash: String?, var material: String?,
                    var adult: Int?, var child: Int?, var clinic: String?,
                    var move: Int?, var personMove: String?, var calls: Int?,
                    var trees: Int?, var cover: String?, var coverFreq: String?,
@@ -14,7 +14,7 @@ class ReportSurvey(var clean: Int?, var wash: String?, var material: String?,
 
     companion object {
         fun fromSurveyDB(surveyDB: SurveyDB): ReportSurvey {
-            return ReportSurvey(surveyDB.clean, surveyDB.wash, surveyDB.material,
+            return ReportSurvey(surveyDB.id, surveyDB.clean, surveyDB.wash, surveyDB.material,
                     surveyDB.adult, surveyDB.child, surveyDB.clinic,
                     surveyDB.move, surveyDB.personMove, surveyDB.calls,
                     surveyDB.trees, surveyDB.cover, surveyDB.coverFreq,

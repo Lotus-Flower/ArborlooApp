@@ -11,19 +11,29 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
+import com.rit.matthew.arborlooapp.Database.Entities.SurveyDB
+import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
 import com.rit.matthew.arborlooapp.Model.Report
 import com.rit.matthew.arborlooapp.Model.ReportSurvey
 import com.rit.matthew.arborlooapp.R
 import com.rit.matthew.arborlooapp.databinding.ReportSurveyFragmentBinding
+import kotlinx.android.synthetic.main.report_info_fragment.*
 import kotlinx.android.synthetic.main.report_survey_fragment.*
 
-class ReportSurveyFragment : Fragment() {
+class ReportSurveyFragment : Fragment(), ReportSurveyContract.View {
 
     private lateinit var binding: ReportSurveyFragmentBinding
     private lateinit var survey: ReportSurvey
 
+    private lateinit var report: Report
+
+    private lateinit var presenter: ReportSurveyContract.Presenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        presenter = ReportSurveyPresenter(this, ReportRepository(appDB = AppDB.getInstance(context)))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -43,12 +53,10 @@ class ReportSurveyFragment : Fragment() {
 
 
     private fun setupUI() {
-        val report = activity?.intent?.getParcelableExtra("report") as Report
+        report = activity?.intent?.getParcelableExtra("report") as Report
         binding.currentReport = report
 
         survey = activity?.intent?.getParcelableExtra("survey") as ReportSurvey
-
-        Log.d("MMMM", "Person Moved: " + survey.personMove)
 
         setupSliders()
 
@@ -66,7 +74,7 @@ class ReportSurveyFragment : Fragment() {
 
     private fun setEventHandlers() {
         apply_survey_button.setOnClickListener {
-            convertProgressToCost()
+            presenter.updateSurvey(constructSurveyForUpdate())
         }
     }
 
@@ -120,6 +128,17 @@ class ReportSurveyFragment : Fragment() {
         return ((data.toFloat()) * 100F)/ (max.toFloat() - 1F)
     }
 
+    private fun calculateValue(progress: Int, max: Int) : Int {
+        return (((progress * (max - 1F))/100F).toInt())
+    }
+
+    private fun getValueFromArrayResource(progress: Int): Int{
+        val costStringList = resources.getStringArray(R.array.cost_range_array)
+        val index: Int = ((progress * 5) / 100)
+
+        return costStringList.get(index).removePrefix("$").toInt()
+    }
+
     private fun calculateProgressFromArrayResource(data: Int?): Float {
         val costStringList = resources.getStringArray(R.array.cost_range_array)
         val costList = arrayListOf<Int>()
@@ -130,10 +149,40 @@ class ReportSurveyFragment : Fragment() {
         return calculateProgress(costList.indexOf(data), costList.size)
     }
 
-    private fun convertProgressToCost(){
-        //Log.d("MMMM", survey_cost_slider.progress.toString())
+    private fun constructSurveyForUpdate() : SurveyDB{
 
-        Log.d("MMMM", (binding.root.findViewById(binding.surveyWashRadioGroup.checkedRadioButtonId) as RadioButton).text.toString())
+        val surveyDB = SurveyDB()
+
+        surveyDB.id = survey.id
+        surveyDB.reportId = report.id
+        surveyDB.clean = calculateValue(survey_clean_slider.progress, survey_clean_slider.tickCount)
+        surveyDB.adult = calculateValue(survey_adult_slider.progress, survey_adult_slider.tickCount)
+        surveyDB.child = calculateValue(survey_child_slider.progress, survey_child_slider.tickCount)
+        surveyDB.calls = calculateValue(survey_calls_slider.progress, survey_calls_slider.tickCount)
+        surveyDB.trees = calculateValue(survey_trees_slider.progress, survey_trees_slider.tickCount)
+        surveyDB.move = calculateValue(survey_moved_slider.progress, survey_moved_slider.tickCount)
+
+        surveyDB.personMove = survey_moved_edit_text.text.toString()
+        surveyDB.material = survey_material_edit_text.text.toString()
+        surveyDB.cover = survey_cover_edit_text.text.toString()
+        surveyDB.clinic = survey_clinic_visits_edit_text.text.toString()
+        surveyDB.good = survey_good_edit_text.text.toString()
+        surveyDB.bad = survey_bad_edit_text.text.toString()
+        surveyDB.broken = survey_broken_edit_text.text.toString()
+        surveyDB.problems = survey_problems_edit_text.text.toString()
+
+        surveyDB.wash = (binding.root.findViewById(binding.surveyWashRadioGroup.checkedRadioButtonId) as RadioButton).text.toString()
+        surveyDB.coverFreq = (binding.root.findViewById(binding.surveyCoverFreqRadioGroup.checkedRadioButtonId) as RadioButton).text.toString()
+        surveyDB.purchase = (binding.root.findViewById(binding.surveyPurchaseRadioGroup.checkedRadioButtonId) as RadioButton).text.toString()
+
+        surveyDB.cost = getValueFromArrayResource(survey_cost_slider.progress)
+
+        return surveyDB
+
+    }
+
+    override fun setSurvey(survey: ReportSurvey) {
+        (activity?.intent?.getParcelableExtra("report") as Report).survey = survey
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -143,5 +192,10 @@ class ReportSurveyFragment : Fragment() {
         } else {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.destroy()
     }
 }

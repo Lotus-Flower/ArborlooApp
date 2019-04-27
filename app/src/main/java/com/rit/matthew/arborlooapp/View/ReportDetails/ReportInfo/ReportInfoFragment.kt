@@ -29,6 +29,8 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        presenter = ReportInfoPresenter(this, ReportRepository(appDB = AppDB.getInstance(context)))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -42,8 +44,6 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        presenter = ReportInfoPresenter(this, ReportRepository(appDB = AppDB.getInstance(context)))
 
         setupUI()
     }
@@ -60,29 +60,11 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
 
     private fun setEventHandlers() {
         apply_info_button.setOnClickListener {
-
-            val infoDB = InfoDB()
-
-            infoDB.id = report.info.id
-            infoDB.reportId = report.id
-            infoDB.fullness = fullness_slider.progress
-            infoDB.cleanliness = cleanliness_slider.progress
-            infoDB.smell = smell_slider.progress
-            infoDB.drainage = radioIndexToBoolean(drainage_radio_group.indexOfChild(binding.drainageRadioGroup.findViewById(drainage_radio_group.checkedRadioButtonId)))
-            infoDB.covered = radioIndexToBoolean(cover_radio_group.indexOfChild(binding.coverRadioGroup.findViewById(cover_radio_group.checkedRadioButtonId)))
-            infoDB.water = radioIndexToBoolean(water_radio_group.indexOfChild(binding.waterRadioGroup.findViewById(water_radio_group.checkedRadioButtonId)))
-            infoDB.soap = radioIndexToBoolean(soap_radio_group.indexOfChild(binding.soapRadioGroup.findViewById(soap_radio_group.checkedRadioButtonId)))
-            infoDB.wipe = radioIndexToBoolean(wipe_radio_group.indexOfChild(binding.wipeRadioGroup.findViewById(wipe_radio_group.checkedRadioButtonId)))
-            infoDB.pests = pests_edit_text.text.toString()
-            infoDB.treesInside = inside_trees_edit_text.text.toString()
-            infoDB.treesOutside = outside_trees_edit_text.text.toString()
-            infoDB.other = other_info_edit_text.text.toString()
-
-            presenter.updateInfo(infoDB)
+            presenter.updateInfo(constructInfoForUpdate())
         }
     }
 
-    override fun setupInfoUI(info: ReportInfo){
+    private fun setupInfoUI(info: ReportInfo){
 
         info.fullness?.toFloat()?.let { fullness_slider.setProgress(it) }
         info.cleanliness?.toFloat()?.let { cleanliness_slider.setProgress(it) }
@@ -117,8 +99,25 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
         return index == 0
     }
 
-    private fun calculateDataFromProgress(progress: Int?, max: Int): Int? {
-        return (progress?.times(100))?.div(5)
+    private fun constructInfoForUpdate() : InfoDB{
+        val infoDB = InfoDB()
+
+        infoDB.id = report.info.id
+        infoDB.reportId = report.id
+        infoDB.fullness = fullness_slider.progress
+        infoDB.cleanliness = cleanliness_slider.progress
+        infoDB.smell = smell_slider.progress
+        infoDB.drainage = radioIndexToBoolean(drainage_radio_group.indexOfChild(binding.drainageRadioGroup.findViewById(drainage_radio_group.checkedRadioButtonId)))
+        infoDB.covered = radioIndexToBoolean(cover_radio_group.indexOfChild(binding.coverRadioGroup.findViewById(cover_radio_group.checkedRadioButtonId)))
+        infoDB.water = radioIndexToBoolean(water_radio_group.indexOfChild(binding.waterRadioGroup.findViewById(water_radio_group.checkedRadioButtonId)))
+        infoDB.soap = radioIndexToBoolean(soap_radio_group.indexOfChild(binding.soapRadioGroup.findViewById(soap_radio_group.checkedRadioButtonId)))
+        infoDB.wipe = radioIndexToBoolean(wipe_radio_group.indexOfChild(binding.wipeRadioGroup.findViewById(wipe_radio_group.checkedRadioButtonId)))
+        infoDB.pests = pests_edit_text.text.toString()
+        infoDB.treesInside = inside_trees_edit_text.text.toString()
+        infoDB.treesOutside = outside_trees_edit_text.text.toString()
+        infoDB.other = other_info_edit_text.text.toString()
+
+        return infoDB
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -128,5 +127,10 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
         } else {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.destroy()
     }
 }

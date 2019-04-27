@@ -44,10 +44,6 @@ class ReportListPresenter(var view: ReportListActivity?, val reportRepository: R
             override fun onSuccess(data: MutableList<*>?) {
                 info = ReportInfo.fromInfoDB(data!![0] as InfoDB)
 
-                for(surveyData in (data as ArrayList<InfoDB>)){
-                    Log.d("MMMM", "entry")
-                }
-
                 getSurveyData()
             }
             override fun onFailure() {
@@ -61,10 +57,6 @@ class ReportListPresenter(var view: ReportListActivity?, val reportRepository: R
         reportRepository.getSurvey(reportDB.id, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
                 survey = ReportSurvey.fromSurveyDB(data!![0] as SurveyDB)
-
-                for(surveyData in (data as ArrayList<SurveyDB>)){
-                    Log.d("MMMM", "entry")
-                }
 
                 getTemperatureData()
             }
