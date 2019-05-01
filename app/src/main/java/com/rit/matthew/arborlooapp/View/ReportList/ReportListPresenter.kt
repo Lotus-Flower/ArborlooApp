@@ -59,6 +59,45 @@ class ReportListPresenter(var view: ReportListActivity?, val reportRepository: R
         })
     }
 
+    override fun deleteReport(reportDB: ReportDB) {
+        reportRepository.deleteReport(reportDB, object :BaseCallback{
+            override fun onSuccess(data: MutableList<*>?) {
+                setupReportList()
+            }
+
+            override fun onFailure() {
+
+            }
+
+        })
+    }
+
+    override fun deleteAllReports() {
+        reportRepository.deleteAllReports(object : BaseCallback{
+            override fun onSuccess(data: MutableList<*>?) {
+                setupReportList()
+            }
+
+            override fun onFailure() {
+
+            }
+
+        })
+    }
+
+    override fun getExcelData() {
+        reportRepository.getReports(object : BaseCallback{
+            override fun onSuccess(data: MutableList<*>?) {
+                val reports = ArrayList(data) as ArrayList<ReportDB>
+                view?.setExcelData(reports)
+            }
+            override fun onFailure() {
+
+            }
+
+        })
+    }
+
     override fun parseSerialData(data: String) {
 
         var tempArray: ArrayList<String> = ArrayList()
@@ -98,22 +137,14 @@ class ReportListPresenter(var view: ReportListActivity?, val reportRepository: R
         val moistData = ArrayList<ReportData>()
 
         for(tempIndex in tempArray.indices){
-            tempData.add(ReportData(calculateTemp(tempArray.get(tempIndex).toDouble()), OffsetDateTime.now().toEpochSecond() - ((tempArray.size - 1) - tempIndex) * 43200))
+            tempData.add(ReportData(ReportData.calculateTemp(tempArray.get(tempIndex).toDouble()), OffsetDateTime.now().toEpochSecond() - ((tempArray.size - 1) - tempIndex) * 43200))
         }
 
         for(moistIndex in moistArray.indices){
-            moistData.add(ReportData(calculateMoisture(moistArray.get(moistIndex).toDouble()), OffsetDateTime.now().toEpochSecond() - ((tempArray.size - 1) - moistIndex) * 43200))
+            moistData.add(ReportData(ReportData.calculateMoisture(moistArray.get(moistIndex).toDouble()), OffsetDateTime.now().toEpochSecond() - ((tempArray.size - 1) - moistIndex) * 43200))
         }
 
         view?.setSerialData(tempData, moistData, usageArray[0].toLong())
-    }
-
-    private fun calculateTemp(value: Double): Double{
-        return -46.85 + 175.72 * (value / (2.0).pow(16))
-    }
-
-    private fun calculateMoisture(value: Double): Double{
-        return -6.0 + 125 * (value / (2.0).pow(16))
     }
 
     override fun destroy() {

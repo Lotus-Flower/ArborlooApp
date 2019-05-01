@@ -5,42 +5,70 @@
     android:layout_height="wrap_content"
     xmlns:card_view="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:paddingStart="5dp"
-    android:paddingEnd="5dp"
+    android:paddingStart="0dp"
+    android:paddingEnd="0dp"
     android:paddingTop="5dp"
     android:paddingBottom="0dp"
     android:id="@+id/linear_layout_report_recycler">
 
-    <android.support.v7.widget.CardView
+    <com.chauthai.swipereveallayout.SwipeRevealLayout
+        android:id="@+id/swipe_reveal"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        app:cardBackgroundColor="@color/colorPrimary"
-        card_view:cardCornerRadius="4dp">
+        android:layout_height="wrap_content"
+        app:mode="same_level"
+        app:dragEdge="right">
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/delete_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:background="#ffcc0000">
+
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="@android:color/holo_red_dark"
+                android:textColor="@android:color/white"
+                android:text="@string/delete"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/report_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/text_view_title"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@android:color/white"
-                />
-            <TextView
-                android:id="@+id/text_view_usages"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@android:color/white"
-                android:layout_marginTop="2dp"
-                />
-        </LinearLayout>
+                android:layout_height="80dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="0dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/text_view_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@android:color/white"
+                        />
+                    <TextView
+                        android:id="@+id/text_view_usages"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="@android:color/white"
+                        android:layout_marginTop="2dp"
+                        />
+                </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+            </android.support.v7.widget.CardView>
 
+        </FrameLayout>
+
+    </com.chauthai.swipereveallayout.SwipeRevealLayout>
 
 </LinearLayout>

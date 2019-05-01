@@ -17,6 +17,8 @@ interface ReportListContract {
 
         fun setData(reportDB: ReportDB)
 
+        fun setExcelData(reports: ArrayList<ReportDB>)
+
     }
 
     interface Presenter : BasePresenter{
@@ -26,6 +28,12 @@ interface ReportListContract {
         fun getReportData(reportId: Long)
 
         fun createReport(reportName: String, tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>, uses: Long)
+
+        fun deleteReport(reportDB: ReportDB)
+
+        fun deleteAllReports()
+
+        fun getExcelData()
 
         fun parseSerialData(data: String)
 

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.Toast
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
 import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
 import com.rit.matthew.arborlooapp.Model.Report
@@ -175,6 +176,10 @@ class ReportSurveyFragment : Fragment(), ReportSurveyContract.View {
 
     override fun setReport(report: Report) {
         activity?.intent?.putExtra("report", report)
+        activity?.runOnUiThread {
+            Toast.makeText(context, "Changes Applied", Toast.LENGTH_SHORT).show()
+        }
+        Toast.makeText(context, "Changes Applied", Toast.LENGTH_SHORT).show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

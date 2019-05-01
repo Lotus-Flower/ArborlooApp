@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
+import android.widget.Toast
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
 import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
 import com.rit.matthew.arborlooapp.Model.Report
@@ -81,6 +82,9 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
 
     override fun setReport(report: Report) {
         activity?.intent?.putExtra("report", report)
+        activity?.runOnUiThread {
+            Toast.makeText(context, "Changes Applied", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setRadioButtonYesNo(data: Boolean?, radioGroup: RadioGroup){

@@ -111,4 +111,6 @@
     <string name="sometimes">Sometimes</string>
     <string name="serial_data">Serial Data:</string>
     <string name="sensor_data">Sensor Data</string>
+    <string name="delete">Delete</string>
+    <string name="delete_all">Delete All</string>
 </resources>

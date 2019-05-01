@@ -2,6 +2,10 @@ package com.rit.matthew.arborlooapp.Export
 
 import com.rit.matthew.arborlooapp.Model.Report
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import org.threeten.bp.Instant
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.format.DateTimeFormatter
 
 class ExcelGenerator {
     companion object {
@@ -23,6 +27,10 @@ class ExcelGenerator {
                 infoIndex++
             }
 
+            val usageRow = infoSheet.createRow(infoIndex)
+            usageRow.createCell(0).setCellValue("Uses")
+            usageRow.createCell(1).setCellValue(report.uses.toString())
+
             val surveySheet = workbook.createSheet("Survey Questions")
 
             val surveyHeadingRow = surveySheet.createRow(0)
@@ -33,7 +41,7 @@ class ExcelGenerator {
             for(surveyQuestion in surveyHashMap.keys){
                 val surveyRow = surveySheet.createRow(surveyIndex)
                 surveyRow.createCell(0).setCellValue(surveyQuestion)
-                surveyRow.createCell(1).setCellValue(infoHashMap.get(surveyQuestion).toString())
+                surveyRow.createCell(1).setCellValue(surveyHashMap.get(surveyQuestion).toString())
                 surveyIndex++
             }
 
@@ -47,7 +55,8 @@ class ExcelGenerator {
             for(tempIndex in report.temperatureData.indices){
                 val tempRow = tempSheet.createRow(tempIndex + 1)
                 tempRow.createCell(0).setCellValue(report.temperatureData.get(tempIndex).data.toString())
-                tempRow.createCell(1).setCellValue(report.temperatureData.get(tempIndex).dateTime.toString())
+                val tempDate = OffsetDateTime.ofInstant(report.temperatureData.get(tempIndex).dateTime?.let { Instant.ofEpochSecond(it) }, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                tempRow.createCell(1).setCellValue(tempDate)
             }
 
             val moistSheet = workbook.createSheet("Moisture Data")
@@ -58,9 +67,10 @@ class ExcelGenerator {
             moistHeadingRow.createCell(1).setCellValue("DateTime")
 
             for(moistIndex in report.moistureData.indices){
-                val moistRow = tempSheet.createRow(moistIndex + 1)
+                val moistRow = moistSheet.createRow(moistIndex + 1)
                 moistRow.createCell(0).setCellValue(report.moistureData.get(moistIndex).data.toString())
-                moistRow.createCell(1).setCellValue(report.moistureData.get(moistIndex).dateTime.toString())
+                val moistDate = OffsetDateTime.ofInstant(report.moistureData.get(moistIndex).dateTime?.let { Instant.ofEpochSecond(it) }, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                moistRow.createCell(1).setCellValue(moistDate)
             }
 
             return workbook

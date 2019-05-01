@@ -1,7 +1,11 @@
 package com.rit.matthew.arborlooapp.View.ReportList
 
+import android.Manifest
 import android.content.*
+import android.content.pm.PackageManager
 import android.os.*
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -29,6 +33,10 @@ import com.rit.matthew.arborlooapp.Export.ExcelGenerator
 import com.rit.matthew.arborlooapp.Model.ReportInfo
 import com.rit.matthew.arborlooapp.Model.ReportSurvey
 import com.rit.matthew.arborlooapp.Usb.UsbService
+import org.threeten.bp.Instant
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.format.DateTimeFormatter
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -55,6 +63,8 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
     private lateinit var mHandler: MyHandler
 
     private var dataBlob: String = ""
+
+    private val fileRequestCode: Int = 101
 
     private lateinit var dialogView: View
 
@@ -86,6 +96,31 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         }
     }
 
+    private val reportCallback:BaseCallback = object : BaseCallback{
+        override fun onSuccess(data: MutableList<*>?) {
+            val reportDB = data!![0] as ReportDB
+
+            reportDB.id?.let { presenter.getReportData(it) }
+        }
+
+        override fun onFailure() {
+
+        }
+    }
+
+    private val deleteCallback: BaseCallback = object : BaseCallback{
+        override fun onSuccess(data: MutableList<*>?) {
+            val reportDB = data!![0] as ReportDB
+
+            presenter.deleteReport(reportDB)
+        }
+
+        override fun onFailure() {
+
+        }
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.report_list_activity)
@@ -98,8 +133,6 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         sharedPref = this.getPreferences(Context.MODE_PRIVATE)
 
         mHandler = MyHandler(this)
-
-        test_box.visibility = View.GONE
 
         setupUI()
         setEventHandlers()
@@ -114,7 +147,12 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         // Handle item selection
         when (item.getItemId()) {
             R.id.action_export -> {
-                testThis()
+                //presenter.getExcelData()
+                requestFilePermission()
+                return true
+            }
+            R.id.action_delete -> {
+                presenter.deleteAllReports()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -162,16 +200,7 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
     override fun setupUI() {
         recyclerView = recycler_view_report_list
-        adapter = ReportListAdapter(ArrayList(), this, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-                val reportDB = data!![0] as ReportDB
-
-                reportDB.id?.let { presenter.getReportData(it) }
-            }
-            override fun onFailure() {
-
-            }
-        })
+        adapter = ReportListAdapter(ArrayList(), this, reportCallback, deleteCallback)
 
         recyclerView.layoutManager = LinearLayoutManager(this) as RecyclerView.LayoutManager?
         recyclerView.adapter = adapter
@@ -193,12 +222,12 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
                 .customView(R.layout.create_report_view, true)
                 .positiveText("Confirm")
                 .negativeText("Cancel")
-                .onPositive { dialog, which ->
+                .onPositive { dialog, _ ->
                     val reportNameEditText = dialog.view.findViewById(R.id.report_name_edit_text) as MaterialEditText
 
                     presenter.createReport(reportNameEditText.text.toString(), tempData, moistData, uses)
                 }
-                .onNegative { dialog, which ->
+                .onNegative { _, _ ->
                     dataBlob = ""
                 }
 
@@ -266,42 +295,26 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         presenter.destroy()
     }
 
-    private fun testThis(){
-        //val infoArray = arrayListOf<String>(*resources.getStringArray(R.array.info))
-        //val surveyArray = arrayListOf<String>(*resources.getStringArray(R.array.survey))
+    override fun setExcelData(reports: ArrayList<ReportDB>) {
 
-        /*for(reportDB in reportDBs){
-            Log.d("MMMM", "repDB" + reportDB.name)
-
-            presenter.getReportData(reportDB)
-        }*/
-
-        //presenter.reportRepository.getReport(2, object : BaseCallback{
-            /*override fun onSuccess(data: MutableList<*>?) {
-
-            }
-
-            override fun onFailure() {
-
-            }
-
-        })*/
-    }
-
-    private fun getExcelData(){
         for(report in reports){
-            val workbook = (ExcelGenerator.createExcelData(report, ReportInfo.createInfoHashMap(report.info!!, arrayListOf<String>(*resources.getStringArray(R.array.info))), ReportSurvey.createSurveyHashMap(report.survey!!, arrayListOf<String>(*resources.getStringArray(R.array.survey)))))
 
-            val file = File(getExternalFilesDir(null), report.name)
+            val workbook = (ExcelGenerator.createExcelData(Report.reportFromDB(report), ReportInfo.createInfoHashMap(report.info!!, arrayListOf<String>(*resources.getStringArray(R.array.info))), ReportSurvey.createSurveyHashMap(report.survey!!, arrayListOf<String>(*resources.getStringArray(R.array.survey)))))
+
+            val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val file = File(dir, report.name + ".xls")
             var os: FileOutputStream? = null
 
             try {
                 os = FileOutputStream(file)
                 workbook.write(os)
+                showToast("Wrote files to Downloads Folder")
                 Log.w("FileUtils", "Writing file$file")
             } catch (e: IOException) {
+                showToast("Error writing files to Downloads Folder")
                 Log.w("FileUtils", "Error writing $file", e)
             } catch (e: Exception) {
+                showToast("Error writing files to Downloads Folder")
                 Log.w("FileUtils", "Failed to save file", e)
             } finally {
                 try {
@@ -312,8 +325,36 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
             }
         }
+    }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            fileRequestCode -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    presenter.getExcelData()
+                } else {
 
+                }
+                return
+            }
+            else -> {
+
+            }
+        }
+    }
+
+    private fun showToast(data: String){
+        runOnUiThread {
+            Toast.makeText(this, data, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun requestFilePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), fileRequestCode)
+        }else{
+            presenter.getExcelData()
+        }
     }
 
     /*
@@ -331,9 +372,4 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
             }
         }
     }
-
-    private fun isExternalStorageWritable(): Boolean {
-        return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
-    }
-
 }
