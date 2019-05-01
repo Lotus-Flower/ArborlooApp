@@ -18,35 +18,14 @@ interface ReportDAO{
     @Query("Select * FROM ReportDB WHERE id = :reportId")
     fun getReportById(reportId: Long) : Single<ReportDB>
 
-    @Query("SELECT * FROM InfoDB WHERE reportId=:reportId ORDER BY id")
-    fun getInfo(reportId: Long?): InfoDB
-
-    @Query("SELECT * FROM SurveyDB WHERE reportId=:reportId LIMIT 1")
-    fun getSurvey(reportId: Long?): SurveyDB
-
     @Insert(onConflict = REPLACE)
     fun insertReport(reportDB: ReportDB)
 
-    @Insert(onConflict = REPLACE)
-    fun insertInfo(infoDB: InfoDB)
-
-    @Insert(onConflict = REPLACE)
-    fun insertSurvey(surveyDB: SurveyDB)
-
     @Update
-    fun updateInfo(infoDB: InfoDB)
-
-    @Update
-    fun updateSurvey(surveyDB: SurveyDB)
+    fun updateReport(reportDB: ReportDB)
 
     @Delete
     fun deleteReport(reportDB: ReportDB)
-
-    @Delete
-    fun deleteInfo(infoDB: InfoDB)
-
-    @Delete
-    fun deleteSurvey(surveyDB: SurveyDB)
 
     @Query("DELETE FROM ReportDB")
     fun deleteAllReports()

@@ -1,25 +1,20 @@
 package com.rit.matthew.arborlooapp.View.ReportDetails.ReportSurvey
 
-import android.content.res.Resources
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.Toast
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
-import com.rit.matthew.arborlooapp.Database.Entities.SurveyDB
 import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
 import com.rit.matthew.arborlooapp.Model.Report
 import com.rit.matthew.arborlooapp.Model.ReportSurvey
 import com.rit.matthew.arborlooapp.R
 import com.rit.matthew.arborlooapp.databinding.ReportSurveyFragmentBinding
-import kotlinx.android.synthetic.main.report_info_fragment.*
 import kotlinx.android.synthetic.main.report_survey_fragment.*
 
 class ReportSurveyFragment : Fragment(), ReportSurveyContract.View {
@@ -72,7 +67,8 @@ class ReportSurveyFragment : Fragment(), ReportSurveyContract.View {
 
     private fun setEventHandlers() {
         apply_survey_button.setOnClickListener {
-            presenter.updateSurvey(constructSurveyForUpdate())
+            report.survey = constructSurveyForUpdate()
+            presenter.updateSurvey(report)
         }
     }
 
@@ -113,7 +109,7 @@ class ReportSurveyFragment : Fragment(), ReportSurveyContract.View {
             data.toLowerCase() == "every use" -> {
                 radioGroup.check(radioGroup.getChildAt(0).id)
             }
-            data.toLowerCase() == "every day" -> {
+            data.toLowerCase() == "daily" -> {
                 radioGroup.check(radioGroup.getChildAt(1).id)
             }
             else -> {
@@ -147,40 +143,38 @@ class ReportSurveyFragment : Fragment(), ReportSurveyContract.View {
         return calculateProgress(costList.indexOf(data), costList.size)
     }
 
-    private fun constructSurveyForUpdate() : SurveyDB{
+    private fun constructSurveyForUpdate() : ReportSurvey{
 
-        val surveyDB = SurveyDB()
+        val reportSurvey = ReportSurvey()
 
-        surveyDB.id = report.survey?.id
-        surveyDB.reportId = report.id
-        surveyDB.clean = calculateValue(survey_clean_slider.progress, survey_clean_slider.tickCount)
-        surveyDB.adult = calculateValue(survey_adult_slider.progress, survey_adult_slider.tickCount)
-        surveyDB.child = calculateValue(survey_child_slider.progress, survey_child_slider.tickCount)
-        surveyDB.calls = calculateValue(survey_calls_slider.progress, survey_calls_slider.tickCount)
-        surveyDB.trees = calculateValue(survey_trees_slider.progress, survey_trees_slider.tickCount)
-        surveyDB.move = calculateValue(survey_moved_slider.progress, survey_moved_slider.tickCount)
+        reportSurvey.clean = calculateValue(survey_clean_slider.progress, survey_clean_slider.tickCount)
+        reportSurvey.adult = calculateValue(survey_adult_slider.progress, survey_adult_slider.tickCount)
+        reportSurvey.child = calculateValue(survey_child_slider.progress, survey_child_slider.tickCount)
+        reportSurvey.calls = calculateValue(survey_calls_slider.progress, survey_calls_slider.tickCount)
+        reportSurvey.trees = calculateValue(survey_trees_slider.progress, survey_trees_slider.tickCount)
+        reportSurvey.move = calculateValue(survey_moved_slider.progress, survey_moved_slider.tickCount)
 
-        surveyDB.personMove = survey_moved_edit_text.text.toString()
-        surveyDB.material = survey_material_edit_text.text.toString()
-        surveyDB.cover = survey_cover_edit_text.text.toString()
-        surveyDB.clinic = survey_clinic_visits_edit_text.text.toString()
-        surveyDB.good = survey_good_edit_text.text.toString()
-        surveyDB.bad = survey_bad_edit_text.text.toString()
-        surveyDB.broken = survey_broken_edit_text.text.toString()
-        surveyDB.problems = survey_problems_edit_text.text.toString()
+        reportSurvey.personMove = survey_moved_edit_text.text.toString()
+        reportSurvey.material = survey_material_edit_text.text.toString()
+        reportSurvey.cover = survey_cover_edit_text.text.toString()
+        reportSurvey.clinic = survey_clinic_visits_edit_text.text.toString()
+        reportSurvey.good = survey_good_edit_text.text.toString()
+        reportSurvey.bad = survey_bad_edit_text.text.toString()
+        reportSurvey.broken = survey_broken_edit_text.text.toString()
+        reportSurvey.problems = survey_problems_edit_text.text.toString()
 
-        surveyDB.wash = (binding.root.findViewById(binding.surveyWashRadioGroup.checkedRadioButtonId) as RadioButton).text.toString()
-        surveyDB.coverFreq = (binding.root.findViewById(binding.surveyCoverFreqRadioGroup.checkedRadioButtonId) as RadioButton).text.toString()
-        surveyDB.purchase = (binding.root.findViewById(binding.surveyPurchaseRadioGroup.checkedRadioButtonId) as RadioButton).text.toString()
+        reportSurvey.wash = (binding.root.findViewById(binding.surveyWashRadioGroup.checkedRadioButtonId) as RadioButton).text.toString()
+        reportSurvey.coverFreq = (binding.root.findViewById(binding.surveyCoverFreqRadioGroup.checkedRadioButtonId) as RadioButton).text.toString()
+        reportSurvey.purchase = (binding.root.findViewById(binding.surveyPurchaseRadioGroup.checkedRadioButtonId) as RadioButton).text.toString()
 
-        surveyDB.cost = getValueFromArrayResource(survey_cost_slider.progress)
+        reportSurvey.cost = getValueFromArrayResource(survey_cost_slider.progress)
 
-        return surveyDB
+        return reportSurvey
 
     }
 
-    override fun setSurvey(survey: ReportSurvey) {
-        (activity?.intent?.getParcelableExtra("report") as Report).survey = survey
+    override fun setReport(report: Report) {
+        activity?.intent?.putExtra("report", report)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

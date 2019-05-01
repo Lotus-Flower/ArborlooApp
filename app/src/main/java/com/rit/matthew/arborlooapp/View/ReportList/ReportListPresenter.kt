@@ -12,13 +12,6 @@ import kotlin.math.pow
 
 class ReportListPresenter(var view: ReportListActivity?, val reportRepository: ReportRepository) : ReportListContract.Presenter{
 
-    private lateinit var reportDB: ReportDB
-    private var survey: ReportSurvey? = null
-    private var info: ReportInfo? = null
-    private var temperatureData: ArrayList<ReportData> = ArrayList()
-    private var moistureData: ArrayList<ReportData> = ArrayList()
-    private var uses: Long? = 0
-
     override fun setupReportList() {
         reportRepository.getReports(object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
@@ -32,47 +25,18 @@ class ReportListPresenter(var view: ReportListActivity?, val reportRepository: R
         })
     }
 
-    override fun getReportData(report: ReportDB) {
-        this.reportDB = report
-        this.temperatureData = report.temp
-        this.moistureData = report.moist
-        this.uses = report.uses
-
-        getInfoData()
-    }
-
-    private fun getInfoData(){
-
-        reportRepository.getInfo(reportDB.id, object : BaseCallback{
+    override fun getReportData(reportId: Long) {
+        reportRepository.getReport(reportId, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
-                info = ReportInfo.fromInfoDB(data!![0] as InfoDB)
+                val reportDB = data?.get(0) as ReportDB
 
-                getSurveyData()
+                view?.setData(reportDB)
             }
+
             override fun onFailure() {
-                getSurveyData()
-            }
 
+            }
         })
-    }
-
-    private fun getSurveyData(){
-
-        reportRepository.getSurvey(reportDB.id, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-                survey = ReportSurvey.fromSurveyDB(data!![0] as SurveyDB)
-
-                setData()
-            }
-            override fun onFailure() {
-                setData()
-            }
-
-        })
-    }
-
-    fun setData(){
-        view?.setData(reportDB, info, survey, temperatureData, moistureData, uses)
     }
 
     override fun createReport(reportName: String, tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>, uses: Long) {
@@ -82,10 +46,11 @@ class ReportListPresenter(var view: ReportListActivity?, val reportRepository: R
         reportDB.temp = tempData
         reportDB.moist = moistData
         reportDB.uses = uses
+        reportDB.info = ReportInfo()
+        reportDB.survey = ReportSurvey()
 
         reportRepository.insertReport(reportDB, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
-                Log.d("MMMM", "Report created")
                 setupReportList()
             }
             override fun onFailure() {
@@ -110,10 +75,6 @@ class ReportListPresenter(var view: ReportListActivity?, val reportRepository: R
             }else if(index == 2){
                 usageArray = dataArray[2].split(",").toTypedArray().toCollection(ArrayList())
             }
-        }
-
-        for(use in usageArray){
-            Log.d("MMMM", "use: " + use)
         }
 
 
@@ -144,7 +105,7 @@ class ReportListPresenter(var view: ReportListActivity?, val reportRepository: R
             moistData.add(ReportData(calculateMoisture(moistArray.get(moistIndex).toDouble()), OffsetDateTime.now().toEpochSecond() - ((tempArray.size - 1) - moistIndex) * 43200))
         }
 
-        view?.setSerialData(tempData, moistData, usageArray.get(0).toLong())
+        view?.setSerialData(tempData, moistData, usageArray[0].toLong())
     }
 
     private fun calculateTemp(value: Double): Double{

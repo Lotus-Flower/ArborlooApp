@@ -290,7 +290,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:layout_marginRight="8dp"
-                            android:text="@string/every_day" />
+                            android:text="@string/daily" />
 
                         <RadioButton
                             android:layout_width="wrap_content"

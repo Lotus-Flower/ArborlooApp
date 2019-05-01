@@ -42,7 +42,7 @@
     <string name="survey_cost">How much would you pay?</string>
 
     <string name="every_use">Every Use</string>
-    <string name="every_day">Every Day</string>
+    <string name="daily">Daily</string>
     <string name="not_often">Less</string>
 
     <string name="export">Export</string>

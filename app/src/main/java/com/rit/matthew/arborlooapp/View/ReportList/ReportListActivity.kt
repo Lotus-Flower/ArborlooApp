@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
-import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.rit.matthew.arborlooapp.Base.Callback.BaseCallback
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
@@ -30,7 +29,6 @@ import com.rit.matthew.arborlooapp.Export.ExcelGenerator
 import com.rit.matthew.arborlooapp.Model.ReportInfo
 import com.rit.matthew.arborlooapp.Model.ReportSurvey
 import com.rit.matthew.arborlooapp.Usb.UsbService
-import kotlinx.android.synthetic.main.create_report_view.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -55,8 +53,6 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
     private var usbService: UsbService? = null
     private lateinit var mHandler: MyHandler
-
-    private var multipleReports = false
 
     private var dataBlob: String = ""
 
@@ -100,11 +96,6 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         presenter = ReportListPresenter(this, ReportRepository(appDB = AppDB.getInstance(this)))
 
         sharedPref = this.getPreferences(Context.MODE_PRIVATE)
-
-        /*if(!checkDataExists()){
-            writeTestData()
-            writeDataExists()
-        }*/
 
         mHandler = MyHandler(this)
 
@@ -175,7 +166,7 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
             override fun onSuccess(data: MutableList<*>?) {
                 val reportDB = data!![0] as ReportDB
 
-                presenter.getReportData(reportDB)
+                reportDB.id?.let { presenter.getReportData(it) }
             }
             override fun onFailure() {
 
@@ -234,226 +225,16 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         }
     }
 
-    override fun setData(reportDB: ReportDB, info: ReportInfo?, survey: ReportSurvey?, tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>, uses: Long?) {
-        report = Report.constructReportfromDB(reportDB, info, survey, tempData, moistData)
+    override fun setData(reportDB: ReportDB) {
+        report = Report.reportFromDB(reportDB)
 
-        if(!multipleReports){
-            switchToReportDetails()
-        }else{
-            reports.add(report)
-
-            if(reports.size == reportDBs.size){
-                multipleReports = false
-                getExcelData()
-            }
-        }
+        switchToReportDetails()
     }
 
     private fun switchToReportDetails(){
         val intent = Intent(this, DashboardActivity::class.java)
         intent.putExtra("report", report)
         startActivity(intent)
-    }
-
-    private fun writeDataExists(){
-        with (sharedPref.edit()) {
-            putBoolean("hasData", true)
-            apply()
-        }
-    }
-
-    private fun checkDataExists() : Boolean{
-        return sharedPref.getBoolean("hasData", false)
-    }
-
-    private fun writeTestData(){
-        val rangeMin = 0.0
-        val rangeMax = 100.0
-        val random = Random()
-
-        val points = 200
-
-        val tempArray = ArrayList<ReportData>()
-        val moistArray = ArrayList<ReportData>()
-
-        val tempArray2 = ArrayList<ReportData>()
-        val moistArray2 = ArrayList<ReportData>()
-
-        for(i in 0..points){
-            val newTempData = rangeMin + (rangeMax - rangeMin) * random.nextDouble()
-            val newMoistData = rangeMin + (rangeMax - rangeMin) * random.nextDouble()
-
-            val newDateLong = 1556643166L + (i * 3600L)
-
-            val newTemp = ReportData(newTempData, newDateLong)
-            val newMoist = ReportData(newMoistData, newDateLong)
-
-            if(i > (points/2)){
-                tempArray.add(newTemp)
-                moistArray.add(newMoist)
-            }else{
-                tempArray2.add(newTemp)
-                moistArray2.add(newMoist)
-            }
-        }
-
-        val repo = ReportRepository(appDB = AppDB.getInstance(this))
-
-        val reportDB = ReportDB()
-
-        reportDB.temp = tempArray
-        reportDB.moist = moistArray
-
-        reportDB.name = "Arborloo 1"
-
-        repo.insertReport(reportDB, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-                Log.d("MMMM", "Inserted")
-            }
-            override fun onFailure() {
-
-            }
-        })
-
-        val reportDB1 = ReportDB()
-
-        reportDB1.temp = tempArray2
-        reportDB1.moist = moistArray2
-
-        reportDB1.name = "Arborloo 2"
-
-        repo.insertReport(reportDB1, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-                Log.d("MMMM", "Inserted")
-                writeSurveyData(repo)
-                writeInfoData(repo)
-            }
-            override fun onFailure() {
-
-            }
-        })
-    }
-
-    private fun writeSurveyData(repo: ReportRepository){
-        val surveyDB = SurveyDB()
-        //= ReportSurvey(8, "yes", "water", 8, 8, "yes", 8, "father", 8, 8, "ash", "Every Day", "Everything", "Nothing", "None", "Nothing", "Yes", 300)
-
-        surveyDB.reportId = 1
-        surveyDB.clean = 0
-        surveyDB.wash = "Yes"
-        surveyDB.material = "Water"
-        surveyDB.adult = 1
-        surveyDB.child = 2
-        surveyDB.clinic = "Yes"
-        surveyDB.move = 3
-        surveyDB.personMove = "Father"
-        surveyDB.calls = 4
-        surveyDB.trees = 5
-        surveyDB.cover = "Ash"
-        surveyDB.coverFreq = "Every Day"
-        surveyDB.good = "Everything"
-        surveyDB.bad = "Nothing"
-        surveyDB.problems = "None"
-        surveyDB.broken = "Nothing"
-        surveyDB.purchase = "Yes"
-        surveyDB.cost = 750
-
-        val surveyDB2 = SurveyDB()
-        //= ReportSurvey(8, "yes", "water", 8, 8, "yes", 8, "father", 8, 8, "ash", "Every Day", "Everything", "Nothing", "None", "Nothing", "Yes", 300)
-
-        surveyDB2.reportId = 2
-        surveyDB2.clean = 6
-        surveyDB2.wash = "Yes"
-        surveyDB2.material = "Water"
-        surveyDB2.adult = 7
-        surveyDB2.child = 8
-        surveyDB2.clinic = "Yes"
-        surveyDB2.move = 8
-        surveyDB2.personMove = "Mother"
-        surveyDB2.calls = 8
-        surveyDB2.trees = 8
-        surveyDB2.cover = "Ash"
-        surveyDB2.coverFreq = "Every Day"
-        surveyDB2.good = "Everything"
-        surveyDB2.bad = "Nothing"
-        surveyDB2.problems = "None"
-        surveyDB2.broken = "Nothing"
-        surveyDB2.purchase = "Yes"
-        surveyDB2.cost = 1000
-
-        repo.insertSurvey(surveyDB, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-                Log.d("MMMM", "inserted")
-            }
-            override fun onFailure() {
-
-            }
-
-        })
-
-        repo.insertSurvey(surveyDB2, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-                Log.d("MMMM", "inserted")
-            }
-            override fun onFailure() {
-
-            }
-
-        })
-    }
-
-    private fun writeInfoData(repo: ReportRepository){
-        val infoDB = InfoDB()
-
-        infoDB.reportId = 1
-        infoDB.fullness = 1
-        infoDB.drainage = true
-        infoDB.cleanliness = 2
-        infoDB.covered = true
-        infoDB.pests = "None"
-        infoDB.smell = 3
-        infoDB.water = true
-        infoDB.soap = true
-        infoDB.wipe = true
-        infoDB.treesInside = "Some"
-        infoDB.treesOutside = "Some"
-        infoDB.other = "None"
-
-        val infoDB2 = InfoDB()
-
-        infoDB2.reportId = 2
-        infoDB2.fullness = null
-        infoDB2.drainage = true
-        infoDB2.cleanliness = 4
-        infoDB2.covered = true
-        infoDB2.pests = "None"
-        infoDB2.smell = 5
-        infoDB2.water = true
-        infoDB2.soap = true
-        infoDB2.wipe = true
-        infoDB2.treesInside = "Some"
-        infoDB2.treesOutside = "Some"
-        infoDB2.other = "None"
-
-        repo.insertInfo(infoDB, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-                Log.d("MMMM", "inserted")
-            }
-            override fun onFailure() {
-
-            }
-
-        })
-
-        repo.insertInfo(infoDB2, object : BaseCallback{
-            override fun onSuccess(data: MutableList<*>?) {
-                Log.d("MMMM", "inserted")
-            }
-            override fun onFailure() {
-
-            }
-
-        })
     }
 
     private fun readSerialData(data: String){
@@ -488,8 +269,6 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
     private fun testThis(){
         //val infoArray = arrayListOf<String>(*resources.getStringArray(R.array.info))
         //val surveyArray = arrayListOf<String>(*resources.getStringArray(R.array.survey))
-
-        multipleReports = true
 
         /*for(reportDB in reportDBs){
             Log.d("MMMM", "repDB" + reportDB.name)
@@ -548,7 +327,6 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
                 UsbService.MESSAGE_FROM_SERIAL_PORT -> {
                     val data = msg.obj as String
                     mActivity.get()!!.readSerialData(data)
-                    //Toast.makeText(mActivity.get(), data, Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -1,19 +1,18 @@
 package com.rit.matthew.arborlooapp.View.ReportDetails.ReportSurvey
 
-import com.rit.matthew.arborlooapp.Database.Entities.SurveyDB
-import com.rit.matthew.arborlooapp.Model.ReportSurvey
+import com.rit.matthew.arborlooapp.Model.Report
 
 interface ReportSurveyContract {
 
     interface View{
 
-        fun setSurvey(survey: ReportSurvey)
+        fun setReport(report: Report)
 
     }
 
     interface Presenter{
 
-        fun updateSurvey(surveyDB: SurveyDB)
+        fun updateSurvey(report: Report)
 
         fun destroy()
 

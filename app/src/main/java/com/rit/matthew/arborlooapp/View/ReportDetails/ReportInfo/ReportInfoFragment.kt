@@ -3,18 +3,12 @@ package com.rit.matthew.arborlooapp.View.ReportDetails.ReportInfo
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
-import android.widget.Toast
-import com.google.gson.Gson
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
-import com.rit.matthew.arborlooapp.Database.Entities.InfoDB
-import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
 import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
 import com.rit.matthew.arborlooapp.Model.Report
 import com.rit.matthew.arborlooapp.Model.ReportInfo
@@ -61,7 +55,8 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
 
     private fun setEventHandlers() {
         apply_info_button.setOnClickListener {
-            presenter.updateInfo(constructInfoForUpdate())
+            report.info = constructInfoForUpdate()
+            presenter.updateInfo(report)
         }
     }
 
@@ -84,8 +79,8 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
 
     }
 
-    override fun setInfo(info: ReportInfo) {
-        (activity?.intent?.getParcelableExtra("report") as Report).info = info
+    override fun setReport(report: Report) {
+        activity?.intent?.putExtra("report", report)
     }
 
     private fun setRadioButtonYesNo(data: Boolean?, radioGroup: RadioGroup){
@@ -100,25 +95,23 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
         return index == 0
     }
 
-    private fun constructInfoForUpdate() : InfoDB{
-        val infoDB = InfoDB()
+    private fun constructInfoForUpdate() : ReportInfo{
+        val reportInfo = ReportInfo()
 
-        infoDB.id = report.info?.id
-        infoDB.reportId = report.id
-        infoDB.fullness = fullness_slider.progress
-        infoDB.cleanliness = cleanliness_slider.progress
-        infoDB.smell = smell_slider.progress
-        infoDB.drainage = radioIndexToBoolean(drainage_radio_group.indexOfChild(binding.drainageRadioGroup.findViewById(drainage_radio_group.checkedRadioButtonId)))
-        infoDB.covered = radioIndexToBoolean(cover_radio_group.indexOfChild(binding.coverRadioGroup.findViewById(cover_radio_group.checkedRadioButtonId)))
-        infoDB.water = radioIndexToBoolean(water_radio_group.indexOfChild(binding.waterRadioGroup.findViewById(water_radio_group.checkedRadioButtonId)))
-        infoDB.soap = radioIndexToBoolean(soap_radio_group.indexOfChild(binding.soapRadioGroup.findViewById(soap_radio_group.checkedRadioButtonId)))
-        infoDB.wipe = radioIndexToBoolean(wipe_radio_group.indexOfChild(binding.wipeRadioGroup.findViewById(wipe_radio_group.checkedRadioButtonId)))
-        infoDB.pests = pests_edit_text.text.toString()
-        infoDB.treesInside = inside_trees_edit_text.text.toString()
-        infoDB.treesOutside = outside_trees_edit_text.text.toString()
-        infoDB.other = other_info_edit_text.text.toString()
+        reportInfo.fullness = fullness_slider.progress
+        reportInfo.cleanliness = cleanliness_slider.progress
+        reportInfo.smell = smell_slider.progress
+        reportInfo.drainage = radioIndexToBoolean(drainage_radio_group.indexOfChild(binding.drainageRadioGroup.findViewById(drainage_radio_group.checkedRadioButtonId)))
+        reportInfo.covered = radioIndexToBoolean(cover_radio_group.indexOfChild(binding.coverRadioGroup.findViewById(cover_radio_group.checkedRadioButtonId)))
+        reportInfo.water = radioIndexToBoolean(water_radio_group.indexOfChild(binding.waterRadioGroup.findViewById(water_radio_group.checkedRadioButtonId)))
+        reportInfo.soap = radioIndexToBoolean(soap_radio_group.indexOfChild(binding.soapRadioGroup.findViewById(soap_radio_group.checkedRadioButtonId)))
+        reportInfo.wipe = radioIndexToBoolean(wipe_radio_group.indexOfChild(binding.wipeRadioGroup.findViewById(wipe_radio_group.checkedRadioButtonId)))
+        reportInfo.pests = pests_edit_text.text.toString()
+        reportInfo.treesInside = inside_trees_edit_text.text.toString()
+        reportInfo.treesOutside = outside_trees_edit_text.text.toString()
+        reportInfo.other = other_info_edit_text.text.toString()
 
-        return infoDB
+        return reportInfo
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

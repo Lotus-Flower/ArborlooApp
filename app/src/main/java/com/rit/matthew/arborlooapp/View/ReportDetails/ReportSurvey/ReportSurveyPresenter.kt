@@ -2,37 +2,39 @@ package com.rit.matthew.arborlooapp.View.ReportDetails.ReportSurvey
 
 import android.util.Log
 import com.rit.matthew.arborlooapp.Base.Callback.BaseCallback
-import com.rit.matthew.arborlooapp.Database.Entities.SurveyDB
+import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
 import com.rit.matthew.arborlooapp.Database.Repository.ReportRepository
-import com.rit.matthew.arborlooapp.Model.ReportSurvey
+import com.rit.matthew.arborlooapp.Model.Report
 
 class ReportSurveyPresenter(var view: ReportSurveyContract.View?, val reportRepository: ReportRepository) : ReportSurveyContract.Presenter {
 
-    override fun updateSurvey(surveyDB: SurveyDB) {
-        reportRepository.updateSurvey(surveyDB, object : BaseCallback {
+    override fun updateSurvey(report: Report) {
+        val reportDB = Report.reportToDB(report)
+
+        reportRepository.updateReport(reportDB, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
-                Log.d("MMMM", "Updated")
-                getSurvey(surveyDB.reportId)
+                Log.d("MMMM", report.survey?.child.toString())
+                report.id?.let { getReport(it) }
             }
 
             override fun onFailure() {
-                Log.d("MMMM", "Failure")
+
             }
 
         })
     }
 
-    private fun getSurvey(reportId: Long?){
-        reportRepository.getSurvey(reportId, object : BaseCallback{
+    private fun getReport(reportId: Long){
+        reportRepository.getReport(reportId, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
-                val survey = ReportSurvey.fromSurveyDB(data!![0] as SurveyDB)
+                val reportDB = data?.get(0) as ReportDB
 
-                view?.setSurvey(survey)
+                view?.setReport(Report.reportFromDB(reportDB))
             }
+
             override fun onFailure() {
-                Log.d("MMMM", "Failure")
-            }
 
+            }
         })
     }
 

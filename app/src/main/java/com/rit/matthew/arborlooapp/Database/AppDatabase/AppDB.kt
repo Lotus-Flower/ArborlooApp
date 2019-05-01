@@ -9,7 +9,7 @@ import com.rit.matthew.arborlooapp.Database.DAO.ReportDAO
 import com.rit.matthew.arborlooapp.Database.Entities.*
 import com.rit.matthew.arborlooapp.Database.TypeConverter.ReportTypeConverter
 
-@Database(entities = [(ReportDB::class), (InfoDB::class), (SurveyDB::class)], version = 1)
+@Database(entities = [(ReportDB::class)], version = 1)
 @TypeConverters(ReportTypeConverter::class)
 abstract class AppDB : RoomDatabase() {
 

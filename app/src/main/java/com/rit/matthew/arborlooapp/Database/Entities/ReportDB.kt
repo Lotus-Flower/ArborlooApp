@@ -28,9 +28,9 @@ class ReportDB {
     @ColumnInfo(name = "uses")
     var uses: Long? = null
 
-    /*@ColumnInfo(name = "info")
+    @ColumnInfo(name = "info")
     var info: ReportInfo? = null
 
     @ColumnInfo(name = "survey")
-    var survey: ReportSurvey? = null*/
+    var survey: ReportSurvey? = null
 }
