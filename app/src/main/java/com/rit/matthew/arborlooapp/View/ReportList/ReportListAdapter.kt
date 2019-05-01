@@ -29,7 +29,11 @@ class ReportListAdapter(val reports: ArrayList<ReportDB>, val context: Context?,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        var usageString = "Uses: " + reports[position].uses.toString()
+
         holder.titleTextView.text = reports[position].name as CharSequence
+        holder.usageTextView.text = usageString
 
         holder.linearLayout.setOnClickListener({
             callback.onSuccess(mutableListOf(reports[position]))
@@ -39,6 +43,7 @@ class ReportListAdapter(val reports: ArrayList<ReportDB>, val context: Context?,
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
 
         val titleTextView: TextView = view.text_view_title
+        val usageTextView: TextView = view.text_view_usages
         val linearLayout: LinearLayout = view.linear_layout_report_recycler
 
     }

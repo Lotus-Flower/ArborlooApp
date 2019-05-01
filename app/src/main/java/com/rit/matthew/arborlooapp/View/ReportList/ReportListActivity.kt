@@ -1,8 +1,8 @@
 package com.rit.matthew.arborlooapp.View.ReportList
 
 import android.content.*
+import android.os.*
 import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -17,22 +17,23 @@ import com.rit.matthew.arborlooapp.Model.ReportData
 import com.rit.matthew.arborlooapp.R
 import com.rit.matthew.arborlooapp.View.ReportDetails.Dashboard.DashboardActivity
 import kotlinx.android.synthetic.main.report_list_activity.*
-import org.threeten.bp.Instant
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.ZoneId
 import java.util.*
 import kotlin.collections.ArrayList
-import android.os.Handler
-import android.os.IBinder
-import android.os.Message
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import com.rengwuxian.materialedittext.MaterialEditText
 import com.rit.matthew.arborlooapp.Database.Entities.*
+import com.rit.matthew.arborlooapp.Export.ExcelGenerator
 import com.rit.matthew.arborlooapp.Model.ReportInfo
 import com.rit.matthew.arborlooapp.Model.ReportSurvey
 import com.rit.matthew.arborlooapp.Usb.UsbService
+import kotlinx.android.synthetic.main.create_report_view.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.lang.ref.WeakReference
 
 
@@ -43,11 +44,24 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
     private lateinit var adapter: ReportListAdapter
 
     private lateinit var report: Report
+    private val reports: ArrayList<Report> = ArrayList()
+    private lateinit var reportDBs: ArrayList<ReportDB>
+
+    private var tempData = ArrayList<ReportData>()
+    private var moistData = ArrayList<ReportData>()
+    private var uses: Long = 0
 
     private lateinit var sharedPref: SharedPreferences
 
     private var usbService: UsbService? = null
     private lateinit var mHandler: MyHandler
+
+    private var multipleReports = false
+
+    private var dataBlob: String = ""
+
+    private lateinit var dialogView: View
+
     private val usbConnection = object : ServiceConnection {
         override fun onServiceConnected(arg0: ComponentName, arg1: IBinder) {
             usbService = (arg1 as UsbService.UsbBinder).service
@@ -87,10 +101,10 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
         sharedPref = this.getPreferences(Context.MODE_PRIVATE)
 
-        if(!checkDataExists()){
+        /*if(!checkDataExists()){
             writeTestData()
             writeDataExists()
-        }
+        }*/
 
         mHandler = MyHandler(this)
 
@@ -103,6 +117,17 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.settings_menu, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        when (item.getItemId()) {
+            R.id.action_export -> {
+                testThis()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onResume() {
@@ -149,7 +174,6 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         adapter = ReportListAdapter(ArrayList(), this, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
                 val reportDB = data!![0] as ReportDB
-                //report = Report.constructReportfromDB(reportDB)
 
                 presenter.getReportData(reportDB)
             }
@@ -169,14 +193,7 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         val floatingActionButton = floating_action_button_report_list
         floatingActionButton.setOnClickListener(View.OnClickListener {
             showCreateReportDialog()
-            //showUsbList()
         })
-
-        /*fix.setOnClickListener {
-            val string = "hey"
-            usbService!!.write(string.toByteArray())
-        }*/
-        //fix.visibility = View.GONE
     }
 
     private fun showCreateReportDialog() {
@@ -185,41 +202,56 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
                 .customView(R.layout.create_report_view, true)
                 .positiveText("Confirm")
                 .negativeText("Cancel")
-                .onPositive(object : MaterialDialog.SingleButtonCallback{
-                    override fun onClick(dialog: MaterialDialog, which: DialogAction) {
-                        val reportNameEditText = dialog.view.findViewById(R.id.report_name_edit_text) as MaterialEditText
+                .onPositive { dialog, which ->
+                    val reportNameEditText = dialog.view.findViewById(R.id.report_name_edit_text) as MaterialEditText
 
-                        presenter.createReport(reportNameEditText.text.toString())
-                    }
+                    presenter.createReport(reportNameEditText.text.toString(), tempData, moistData, uses)
+                }
+                .onNegative { dialog, which ->
+                    dataBlob = ""
+                }
 
-                })
+        dialogView = createDialogBuilder.build().customView!!
 
-        val sensorDataButton = createDialogBuilder.build().customView!!.findViewById<Button>(R.id.button_sensor_data)
+        val sensorDataButton = dialogView.findViewById<Button>(R.id.button_sensor_data)
         sensorDataButton.setOnClickListener {
-            val string = "432143214321"
+            dataBlob = ""
+            val string = "a"
+
+            //readSerialData("98,97,89,102,;45,54,29,76,;9,/")
             usbService!!.write(string.toByteArray())
         }
 
-        //showData("1234")
         createDialogBuilder.show()
 
     }
 
     override fun displayReportList(reports: ArrayList<ReportDB>) {
-        adapter.updateDataSet(reports)
+
+        runOnUiThread {
+            reportDBs = reports
+            adapter.updateDataSet(reports)
+        }
     }
 
-    override fun setData(reportDB: ReportDB, info: ReportInfo, survey: ReportSurvey, tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>) {
-
+    override fun setData(reportDB: ReportDB, info: ReportInfo?, survey: ReportSurvey?, tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>, uses: Long?) {
         report = Report.constructReportfromDB(reportDB, info, survey, tempData, moistData)
 
-        switchToReportDetails(survey)
+        if(!multipleReports){
+            switchToReportDetails()
+        }else{
+            reports.add(report)
+
+            if(reports.size == reportDBs.size){
+                multipleReports = false
+                getExcelData()
+            }
+        }
     }
 
-    private fun switchToReportDetails(survey: ReportSurvey){
+    private fun switchToReportDetails(){
         val intent = Intent(this, DashboardActivity::class.java)
         intent.putExtra("report", report)
-        intent.putExtra("survey", survey)
         startActivity(intent)
     }
 
@@ -235,8 +267,42 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
     }
 
     private fun writeTestData(){
+        val rangeMin = 0.0
+        val rangeMax = 100.0
+        val random = Random()
+
+        val points = 200
+
+        val tempArray = ArrayList<ReportData>()
+        val moistArray = ArrayList<ReportData>()
+
+        val tempArray2 = ArrayList<ReportData>()
+        val moistArray2 = ArrayList<ReportData>()
+
+        for(i in 0..points){
+            val newTempData = rangeMin + (rangeMax - rangeMin) * random.nextDouble()
+            val newMoistData = rangeMin + (rangeMax - rangeMin) * random.nextDouble()
+
+            val newDateLong = 1556643166L + (i * 3600L)
+
+            val newTemp = ReportData(newTempData, newDateLong)
+            val newMoist = ReportData(newMoistData, newDateLong)
+
+            if(i > (points/2)){
+                tempArray.add(newTemp)
+                moistArray.add(newMoist)
+            }else{
+                tempArray2.add(newTemp)
+                moistArray2.add(newMoist)
+            }
+        }
+
         val repo = ReportRepository(appDB = AppDB.getInstance(this))
+
         val reportDB = ReportDB()
+
+        reportDB.temp = tempArray
+        reportDB.moist = moistArray
 
         reportDB.name = "Arborloo 1"
 
@@ -251,6 +317,9 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
         val reportDB1 = ReportDB()
 
+        reportDB1.temp = tempArray2
+        reportDB1.moist = moistArray2
+
         reportDB1.name = "Arborloo 2"
 
         repo.insertReport(reportDB1, object : BaseCallback{
@@ -263,56 +332,6 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
             }
         })
-
-        val rangeMin = 0.0
-        val rangeMax = 100.0
-        val random = Random()
-
-        var newTempData = 0.0
-        var newMoistData = 0.0
-        var newDateTime: OffsetDateTime? = null
-        var newReportId:Long = 1
-
-        val points = 200
-
-        for(i in 0..points){
-            newTempData = rangeMin + (rangeMax - rangeMin) * random.nextDouble()
-            newMoistData = rangeMin + (rangeMax - rangeMin) * random.nextDouble()
-            newDateTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(1541404810000 + (i * 3600000)), ZoneId.systemDefault())
-
-            if(i > (points/2)){
-                newReportId = 2
-            }
-
-            var newTemp = TemperatureDB()
-            var newMoist = MoistureDB()
-
-            newTemp.data = newTempData
-            newTemp.dateTime = newDateTime
-            newTemp.reportId = newReportId
-
-            newMoist.data = newMoistData
-            newMoist.dateTime = newDateTime
-            newMoist.reportId = newReportId
-
-            repo.insertTemp(newTemp, object : BaseCallback{
-                override fun onSuccess(data: MutableList<*>?) {
-
-                }
-                override fun onFailure() {
-
-                }
-            })
-
-            repo.insertMoist(newMoist, object : BaseCallback{
-                override fun onSuccess(data: MutableList<*>?) {
-
-                }
-                override fun onFailure() {
-
-                }
-            })
-        }
     }
 
     private fun writeSurveyData(repo: ReportRepository){
@@ -437,18 +456,85 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         })
     }
 
-    private fun showData(data: String){
-        Toast.makeText(this, data, Toast.LENGTH_LONG).show()
-        //test_box.append(data)
+    private fun readSerialData(data: String){
+
+        dataBlob = dataBlob.plus(data)
+
+        if(dataBlob.contains("/", true)){
+
+            Toast.makeText(this, "Sensor Data Received", Toast.LENGTH_SHORT).show()
+
+            dialogView.findViewById<ImageView>(R.id.image_view_data).setImageResource(R.drawable.ic_check_green_24dp)
+
+            presenter.parseSerialData(dataBlob)
+        }
+
+        if(dataBlob.contains("+", true)){
+            dataBlob = ""
+        }
     }
 
-    private fun writeButton(data: String){
-        //fix.text = data
+    override fun setSerialData(tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>, uses: Long) {
+        this.tempData = tempData
+        this.moistData = moistData
+        this.uses = uses
     }
 
     override fun onDestroy() {
         super.onDestroy()
         presenter.destroy()
+    }
+
+    private fun testThis(){
+        //val infoArray = arrayListOf<String>(*resources.getStringArray(R.array.info))
+        //val surveyArray = arrayListOf<String>(*resources.getStringArray(R.array.survey))
+
+        multipleReports = true
+
+        /*for(reportDB in reportDBs){
+            Log.d("MMMM", "repDB" + reportDB.name)
+
+            presenter.getReportData(reportDB)
+        }*/
+
+        //presenter.reportRepository.getReport(2, object : BaseCallback{
+            /*override fun onSuccess(data: MutableList<*>?) {
+
+            }
+
+            override fun onFailure() {
+
+            }
+
+        })*/
+    }
+
+    private fun getExcelData(){
+        for(report in reports){
+            val workbook = (ExcelGenerator.createExcelData(report, ReportInfo.createInfoHashMap(report.info!!, arrayListOf<String>(*resources.getStringArray(R.array.info))), ReportSurvey.createSurveyHashMap(report.survey!!, arrayListOf<String>(*resources.getStringArray(R.array.survey)))))
+
+            val file = File(getExternalFilesDir(null), report.name)
+            var os: FileOutputStream? = null
+
+            try {
+                os = FileOutputStream(file)
+                workbook.write(os)
+                Log.w("FileUtils", "Writing file$file")
+            } catch (e: IOException) {
+                Log.w("FileUtils", "Error writing $file", e)
+            } catch (e: Exception) {
+                Log.w("FileUtils", "Failed to save file", e)
+            } finally {
+                try {
+                    if (null != os)
+                        os.close()
+                } catch (ex: Exception) {
+                }
+
+            }
+        }
+
+
     }
 
     /*
@@ -461,11 +547,15 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
             when (msg.what) {
                 UsbService.MESSAGE_FROM_SERIAL_PORT -> {
                     val data = msg.obj as String
-                    mActivity.get()!!.showData(data)
+                    mActivity.get()!!.readSerialData(data)
                     //Toast.makeText(mActivity.get(), data, Toast.LENGTH_LONG).show()
                 }
             }
         }
+    }
+
+    private fun isExternalStorageWritable(): Boolean {
+        return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
     }
 
 }

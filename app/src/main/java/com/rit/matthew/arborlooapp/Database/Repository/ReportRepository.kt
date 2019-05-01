@@ -1,17 +1,21 @@
 package com.rit.matthew.arborlooapp.Database.Repository
 
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.util.Log
 import com.rit.matthew.arborlooapp.Base.Callback.BaseCallback
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
 import com.rit.matthew.arborlooapp.Database.Entities.*
-import io.reactivex.Completable
-import io.reactivex.CompletableObserver
-import io.reactivex.Single
-import io.reactivex.SingleObserver
+import io.reactivex.*
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Function
+import io.reactivex.internal.operators.observable.ObservableCache
 import io.reactivex.schedulers.Schedulers
+import java.util.function.BiFunction
 
 class ReportRepository(private var appDB: AppDB?) {
+
+    val TAG = "ReportRepository"
 
     fun getReports(callback: BaseCallback){
 
@@ -26,7 +30,7 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.d("MMMM", e.toString())
+                        Log.d(TAG, e.toString())
                     }
 
                 })
@@ -34,10 +38,11 @@ class ReportRepository(private var appDB: AppDB?) {
 
     fun getReport(id: Long, callback: BaseCallback){
 
-        Single.fromCallable<ReportDB> { appDB?.reportDAO()?.getReportById(id) }
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(object : SingleObserver<ReportDB> {
+        appDB?.reportDAO()?.getReportById(id)
+                ?.subscribeOn(Schedulers.newThread())
+                ?.subscribe(object : SingleObserver<ReportDB> {
                     override fun onSuccess(t: ReportDB) {
+                        Log.d(TAG, (t).name)
                         //callback.onSuccess(t)
                     }
 
@@ -45,10 +50,10 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.d("MMMM", e.toString())
+                        Log.d(TAG, e.toString())
                     }
 
-                })
+        })
     }
 
     fun insertReport(reportDB: ReportDB, callback: BaseCallback){
@@ -64,49 +69,10 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                     override fun onError(e: Throwable?) {
-                        Log.d("MMMM", e.toString())
+                        Log.d(TAG, "Insert Report: " + e.toString())
                     }
 
                 })
-    }
-
-    fun getTemperatureData(reportId: Long?, callback: BaseCallback){
-
-        Single.fromCallable{ appDB?.reportDAO()?.getTemperatureData(reportId) }
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(object : SingleObserver<MutableList<TemperatureDB>?> {
-                    override fun onSuccess(t: MutableList<TemperatureDB>?) {
-                        callback.onSuccess(t)
-                    }
-
-                    override fun onSubscribe(d: Disposable) {
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.d("MMMM", e.toString())
-                    }
-
-                })
-    }
-
-    fun getMoistureData(reportId: Long?, callback: BaseCallback){
-
-        Single.fromCallable{ appDB?.reportDAO()?.getMoistureData(reportId) }
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(object : SingleObserver<MutableList<MoistureDB>?> {
-                    override fun onSuccess(t: MutableList<MoistureDB>?) {
-                        callback.onSuccess(t)
-                    }
-
-                    override fun onSubscribe(d: Disposable) {
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.d("MMMM", e.toString())
-                    }
-
-                })
-
     }
 
     fun getInfo(reportId: Long?, callback: BaseCallback){
@@ -122,7 +88,8 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.d("MMMM", e.toString())
+                        Log.d(TAG, "Get Info: " + e.toString())
+                        callback.onFailure()
                     }
 
                 })
@@ -142,50 +109,12 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.d("MMMM", e.toString())
+                        Log.d(TAG, "Get Survey: " + e.toString())
                         callback.onFailure()
                     }
 
                 })
 
-    }
-
-    fun insertTemp(temperatureDB: TemperatureDB, callback: BaseCallback){
-
-        Completable.fromCallable{ appDB?.reportDAO()?.insertTemp(temperatureDB) }
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(object : CompletableObserver{
-                    override fun onComplete() {
-                        callback.onSuccess(null)
-                    }
-
-                    override fun onSubscribe(d: Disposable?) {
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        Log.d("MMMM", e.toString())
-                    }
-
-                })
-    }
-
-    fun insertMoist(moistureDB: MoistureDB, callback: BaseCallback){
-
-        Completable.fromCallable{ appDB?.reportDAO()?.insertMoist(moistureDB) }
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(object : CompletableObserver{
-                    override fun onComplete() {
-                        callback.onSuccess(null)
-                    }
-
-                    override fun onSubscribe(d: Disposable?) {
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        Log.d("MMMM", e.toString())
-                    }
-
-                })
     }
 
     fun insertInfo(infoDB: InfoDB, callback: BaseCallback){
@@ -201,7 +130,7 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                     override fun onError(e: Throwable?) {
-                        Log.d("MMMM", e.toString())
+                        Log.d(TAG, e.toString())
                     }
 
                 })
@@ -220,7 +149,7 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                     override fun onError(e: Throwable?) {
-                        Log.d("MMMM", "survey: " + e.toString())
+                        Log.d(TAG, "Insert Survey: " + e.toString())
                     }
 
                 })
@@ -239,7 +168,7 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                     override fun onError(e: Throwable?) {
-                        Log.d("MMMM", e.toString())
+                        Log.d(TAG, e.toString())
                     }
 
                 })
@@ -258,7 +187,7 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                     override fun onError(e: Throwable?) {
-                        Log.d("MMMM", e.toString())
+                        Log.d(TAG, e.toString())
                     }
 
                 })

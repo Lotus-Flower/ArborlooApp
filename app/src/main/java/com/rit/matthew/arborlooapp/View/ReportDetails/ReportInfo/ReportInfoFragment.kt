@@ -10,6 +10,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioGroup
+import android.widget.Toast
+import com.google.gson.Gson
 import com.rit.matthew.arborlooapp.Database.AppDatabase.AppDB
 import com.rit.matthew.arborlooapp.Database.Entities.InfoDB
 import com.rit.matthew.arborlooapp.Database.Entities.ReportDB
@@ -53,7 +55,6 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
         report = (activity?.intent?.getParcelableExtra("report") as Report)
         binding.currentReport = report
 
-
         setEventHandlers()
         setupInfoUI(report.info)
     }
@@ -64,22 +65,22 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
         }
     }
 
-    private fun setupInfoUI(info: ReportInfo){
+    private fun setupInfoUI(info: ReportInfo?){
 
-        info.fullness?.toFloat()?.let { fullness_slider.setProgress(it) }
-        info.cleanliness?.toFloat()?.let { cleanliness_slider.setProgress(it) }
-        info.smell?.toFloat()?.let { smell_slider.setProgress(it) }
+        info?.fullness?.toFloat()?.let { fullness_slider.setProgress(it) }
+        info?.cleanliness?.toFloat()?.let { cleanliness_slider.setProgress(it) }
+        info?.smell?.toFloat()?.let { smell_slider.setProgress(it) }
 
-        setRadioButtonYesNo(info.drainage, binding.drainageRadioGroup)
-        setRadioButtonYesNo(info.covered, binding.coverRadioGroup)
-        setRadioButtonYesNo(info.water, binding.waterRadioGroup)
-        setRadioButtonYesNo(info.soap, binding.soapRadioGroup)
-        setRadioButtonYesNo(info.wipe, binding.wipeRadioGroup)
+        setRadioButtonYesNo(info?.drainage, binding.drainageRadioGroup)
+        setRadioButtonYesNo(info?.covered, binding.coverRadioGroup)
+        setRadioButtonYesNo(info?.water, binding.waterRadioGroup)
+        setRadioButtonYesNo(info?.soap, binding.soapRadioGroup)
+        setRadioButtonYesNo(info?.wipe, binding.wipeRadioGroup)
 
-        pests_edit_text.setText(info.pests)
-        inside_trees_edit_text.setText(info.treesInside)
-        outside_trees_edit_text.setText(info.treesOutside)
-        other_info_edit_text.setText(info.other)
+        pests_edit_text.setText(info?.pests)
+        inside_trees_edit_text.setText(info?.treesInside)
+        outside_trees_edit_text.setText(info?.treesOutside)
+        other_info_edit_text.setText(info?.other)
 
     }
 
@@ -102,7 +103,7 @@ class ReportInfoFragment : Fragment(), ReportInfoContract.View {
     private fun constructInfoForUpdate() : InfoDB{
         val infoDB = InfoDB()
 
-        infoDB.id = report.info.id
+        infoDB.id = report.info?.id
         infoDB.reportId = report.id
         infoDB.fullness = fullness_slider.progress
         infoDB.cleanliness = cleanliness_slider.progress

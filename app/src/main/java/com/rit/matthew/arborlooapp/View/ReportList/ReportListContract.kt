@@ -13,7 +13,9 @@ interface ReportListContract {
 
         fun displayReportList(reports: ArrayList<ReportDB>)
 
-        fun setData(reportDB: ReportDB, info: ReportInfo, survey: ReportSurvey, tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>)
+        fun setSerialData(tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>, uses: Long)
+
+        fun setData(reportDB: ReportDB, info: ReportInfo?, survey: ReportSurvey?, tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>, uses: Long?)
 
     }
 
@@ -23,7 +25,9 @@ interface ReportListContract {
 
         fun getReportData(report: ReportDB)
 
-        fun createReport(reportName: String)
+        fun createReport(reportName: String, tempData: ArrayList<ReportData>, moistData: ArrayList<ReportData>, uses: Long)
+
+        fun parseSerialData(data: String)
 
     }
 

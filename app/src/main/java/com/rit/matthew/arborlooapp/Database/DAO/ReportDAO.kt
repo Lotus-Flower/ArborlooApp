@@ -5,6 +5,8 @@ import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import com.rit.matthew.arborlooapp.Database.Entities.*
 import com.rit.matthew.arborlooapp.Database.TypeConverter.DataTypeConverter
 import com.rit.matthew.arborlooapp.Database.TypeConverter.ReportTypeConverter
+import io.reactivex.Observable
+import io.reactivex.Single
 
 @Dao
 @TypeConverters(DataTypeConverter::class)
@@ -13,14 +15,8 @@ interface ReportDAO{
     @Query("Select * FROM ReportDB")
     fun getReports() : MutableList<ReportDB>
 
-    @Query("Select * FROM ReportDB WHERE id = :reportId LIMIT 1")
-    fun getReportById(reportId: Long) : ReportDB
-
-    @Query("SELECT * FROM TemperatureDB WHERE reportId=:reportId ORDER BY datetime(dateTime)")
-    fun getTemperatureData(reportId: Long?): MutableList<TemperatureDB>
-
-    @Query("SELECT * FROM MoistureDB WHERE reportId=:reportId ORDER BY datetime(dateTime)")
-    fun getMoistureData(reportId: Long?): MutableList<MoistureDB>
+    @Query("Select * FROM ReportDB WHERE id = :reportId")
+    fun getReportById(reportId: Long) : Single<ReportDB>
 
     @Query("SELECT * FROM InfoDB WHERE reportId=:reportId ORDER BY id")
     fun getInfo(reportId: Long?): InfoDB
@@ -30,12 +26,6 @@ interface ReportDAO{
 
     @Insert(onConflict = REPLACE)
     fun insertReport(reportDB: ReportDB)
-
-    @Insert(onConflict = REPLACE)
-    fun insertTemp(temperatureDB: TemperatureDB)
-
-    @Insert(onConflict = REPLACE)
-    fun insertMoist(moistureDB: MoistureDB)
 
     @Insert(onConflict = REPLACE)
     fun insertInfo(infoDB: InfoDB)
@@ -51,12 +41,6 @@ interface ReportDAO{
 
     @Delete
     fun deleteReport(reportDB: ReportDB)
-
-    @Delete
-    fun deleteTemp(temperatureDB: TemperatureDB)
-
-    @Delete
-    fun deleteMoist(moistureDB: MoistureDB)
 
     @Delete
     fun deleteInfo(infoDB: InfoDB)

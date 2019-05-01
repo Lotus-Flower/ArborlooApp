@@ -56,7 +56,7 @@ class ReportGraphFragment : Fragment(){
             val entryDateTime = reportData.get(i).dateTime
 
             entry.y = entryData!!.toFloat()
-            entry.x = entryDateTime!!.toEpochSecond().toFloat()
+            entry.x = entryDateTime!!.toFloat()
 
             entries.add(entry)
         }

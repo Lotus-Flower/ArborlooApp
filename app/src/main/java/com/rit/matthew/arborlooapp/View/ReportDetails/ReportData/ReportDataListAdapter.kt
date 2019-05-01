@@ -7,10 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.rit.matthew.arborlooapp.Database.Entities.MoistureDB
 import com.rit.matthew.arborlooapp.Model.ReportData
 import com.rit.matthew.arborlooapp.R
 import kotlinx.android.synthetic.main.report_data_list_recycler.view.*
+import org.threeten.bp.Instant
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ReportDataListAdapter(val data: ArrayList<ReportData>?, val context: Context?) : RecyclerView.Adapter<ReportDataListAdapter.ViewHolder>(){
 
@@ -32,8 +37,11 @@ class ReportDataListAdapter(val data: ArrayList<ReportData>?, val context: Conte
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder?.titleTextView?.text = data?.get(position)?.data.toString()
-        holder?.dateTimeTextView?.text = data?.get(position)?.dateTime.toString()
+        holder.titleTextView.text = data?.get(position)?.data.toString()
+
+        val dateTime = OffsetDateTime.ofInstant(data?.get(position)?.dateTime?.let { Instant.ofEpochSecond(it) }, ZoneId.systemDefault())
+        val format = DateTimeFormatter.ISO_LOCAL_DATE
+        holder.dateTimeTextView.text = dateTime.format(format)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){

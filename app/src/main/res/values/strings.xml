@@ -38,7 +38,7 @@
     <string name="survey_bad">What don\'t you like about the Arborloo?</string>
     <string name="survey_problems">Problems with the Arborloo?</string>
     <string name="survey_broken">Arborloo broken?</string>
-    <string name="survey_purchase">Would you buy an arborloo after the study?</string>
+    <string name="survey_purchase">Would you buy an Arborloo after the study?</string>
     <string name="survey_cost">How much would you pay?</string>
 
     <string name="every_use">Every Use</string>
@@ -46,6 +46,41 @@
     <string name="not_often">Less</string>
 
     <string name="export">Export</string>
+
+    <string-array name="info">
+        <item>Fullness of Pit</item>
+        <item>Drainage of Pit</item>
+        <item>Cleanliness of Slab</item>
+        <item>Pit Covered</item>
+        <item>Signs of Pests</item>
+        <item>Smell</item>
+        <item>Water for Handwashing</item>
+        <item>Soap for Handwashing</item>
+        <item>Wiping Materials</item>
+        <item>State of Trees in Pit</item>
+        <item>State of Trees out of Pit</item>
+    </string-array>
+
+    <string-array name="survey">
+        <item>Cleanings per week?</item>
+        <item>Hand washing after use?</item>
+        <item>Material used to wash hands?</item>
+        <item>Adults with diarrhea in past week?</item>
+        <item>Children with diarrhea in past week?</item>
+        <item>Clinic visits this week?</item>
+        <item>Times Arborloo moved this month?</item>
+        <item>Who moved it?</item>
+        <item>Service calls to Belasenp this month?</item>
+        <item>Trees planted in the pit this month?</item>
+        <item>Cover material?</item>
+        <item>How often do you add cover material?</item>
+        <item>What do you like about the Arborloo?</item>
+        <item>What don\'t you like about the Arborloo?</item>
+        <item>Problems with the Arborloo?</item>
+        <item>Arborloo broken?</item>
+        <item>Would you buy an Arborloo after the study?</item>
+        <item>How much would you pay?</item>
+    </string-array>
 
     <string-array name="medium_range_array">
         <item>"0 "</item>
@@ -60,11 +95,11 @@
     </string-array>
 
     <string-array name="cost_range_array">
-        <item>"$500"</item>
-        <item>"$750"</item>
-        <item>"$1000"</item>
-        <item>"$2000"</item>
-        <item>"$3000"</item>
+        <item>"500"</item>
+        <item>"750"</item>
+        <item>"1000"</item>
+        <item>"2000"</item>
+        <item>"3000"</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -74,4 +109,6 @@
     <string name="hand_washing">Hand Washing</string>
     <string name="purchasing">Purchasing</string>
     <string name="sometimes">Sometimes</string>
+    <string name="serial_data">Serial Data:</string>
+    <string name="sensor_data">Sensor Data</string>
 </resources>
