@@ -147,7 +147,6 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
         // Handle item selection
         when (item.getItemId()) {
             R.id.action_export -> {
-                //presenter.getExcelData()
                 requestFilePermission()
                 return true
             }
@@ -161,7 +160,6 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
     override fun onResume() {
         super.onResume()
-        Log.d("MMMM", "Resume")
         setFilters()  // Start listening notifications from UsbService
         startService(UsbService::class.java, usbConnection, null) // Start UsbService(if it was not started before) and Bind it
     }
@@ -226,6 +224,10 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
                     val reportNameEditText = dialog.view.findViewById(R.id.report_name_edit_text) as MaterialEditText
 
                     presenter.createReport(reportNameEditText.text.toString(), tempData, moistData, uses)
+
+                    tempData = ArrayList()
+                    moistData = ArrayList()
+                    uses = 0
                 }
                 .onNegative { _, _ ->
                     dataBlob = ""
@@ -281,6 +283,7 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
 
         if(dataBlob.contains("+", true)){
             dataBlob = ""
+            Toast.makeText(this, "Sensor Sent No Data", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -296,6 +299,10 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
     }
 
     override fun setExcelData(reports: ArrayList<ReportDB>) {
+
+        if(reports.isEmpty()){
+            showToast("No Reports to Export")
+        }
 
         for(report in reports){
 

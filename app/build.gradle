@@ -17,6 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -57,6 +58,7 @@ dependencies {
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.4'
     implementation "com.github.SUPERCILEX.poi-android:poi:3.17"
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+    implementation 'com.android.support:multidex:1.0.3'
     kapt "android.arch.persistence.room:compiler:1.1.1"
     kapt 'com.android.databinding:compiler:3.1.2'
     testImplementation 'junit:junit:4.12'

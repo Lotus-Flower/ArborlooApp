@@ -13,7 +13,6 @@ class ReportSurveyPresenter(var view: ReportSurveyContract.View?, val reportRepo
 
         reportRepository.updateReport(reportDB, object : BaseCallback{
             override fun onSuccess(data: MutableList<*>?) {
-                Log.d("MMMM", report.survey?.child.toString())
                 report.id?.let { getReport(it) }
             }
 

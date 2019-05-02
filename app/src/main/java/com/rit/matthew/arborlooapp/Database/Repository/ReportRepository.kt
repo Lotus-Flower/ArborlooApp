@@ -63,7 +63,7 @@ class ReportRepository(private var appDB: AppDB?) {
                     }
 
                     override fun onError(e: Throwable?) {
-                        Log.d(TAG, "Insert Report: " + e.toString())
+                        Log.d(TAG, e.toString())
                     }
 
                 })

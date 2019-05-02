@@ -12,16 +12,17 @@ import android.hardware.usb.UsbManager
 import android.os.Binder
 import android.os.Handler
 import android.os.IBinder
-import android.util.Log
-import android.widget.Toast
 import com.felhr.usbserial.CDCSerialDevice
-import com.felhr.usbserial.FTDISerialDevice
 import com.felhr.usbserial.UsbSerialDevice
 import com.felhr.usbserial.UsbSerialInterface
-import com.rit.matthew.arborlooapp.Base.Callback.USBCallback
 import java.io.UnsupportedEncodingException
 
 class UsbService : Service() {
+
+    /*
+    * Big thank you to FELHR85 for this example code for his USB Serial Library,
+    * for more info check out the code at https://github.com/felHR85/UsbSerial
+    * */
 
     private val binder = UsbBinder()
 

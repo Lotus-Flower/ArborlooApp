@@ -11,6 +11,13 @@ class ExcelGenerator {
     companion object {
         fun createExcelData(report: Report, infoHashMap: HashMap<String, Any?>, surveyHashMap: HashMap<String, Any?>): HSSFWorkbook{
 
+            /*
+            * Be careful when editing this, it is very hardcoded, a solution I would consider if I had more time was
+            * associating a survey/info value with a question in its own object and then using this list of survey/info items
+            * to make up the survey/info objects. This way, it would eliminate lining them up according to the lists of questions
+            * passed in.
+            * */
+
             val workbook: HSSFWorkbook = HSSFWorkbook()
 
             val infoSheet = workbook.createSheet("Data Collector Observation")

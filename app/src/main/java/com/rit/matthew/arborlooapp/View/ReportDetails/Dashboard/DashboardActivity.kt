@@ -15,10 +15,10 @@ import kotlinx.android.synthetic.main.dashboard_activity.*
 
 class DashboardActivity : AppCompatActivity() {
 
-    private final val INFO: Int = 0
-    private final val SURVEY: Int = 1
-    private final val DATA: Int = 2
-    private final val GRAPH: Int = 3
+    private val INFO: Int = 0
+    private val SURVEY: Int = 1
+    private val DATA: Int = 2
+    private val GRAPH: Int = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +37,7 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun setupUI(){
-        val adapter: DashboardPagerAdapter = DashboardPagerAdapter(supportFragmentManager)
+        val adapter = DashboardPagerAdapter(supportFragmentManager)
         pager.adapter = adapter
 
         tab_layout.setupWithViewPager(pager)
@@ -73,7 +73,7 @@ class DashboardActivity : AppCompatActivity() {
         })
 
         floating_action_button_temperature.setOnClickListener {
-            val index = pager.getCurrentItem()
+            val index = pager.currentItem
             val adapter = pager.adapter as DashboardPagerAdapter
 
             when(pager.currentItem){
@@ -89,7 +89,7 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         floating_action_button_moisture.setOnClickListener {
-            val index = pager.getCurrentItem()
+            val index = pager.currentItem
             val adapter = pager.adapter as DashboardPagerAdapter
 
             when(pager.currentItem){
