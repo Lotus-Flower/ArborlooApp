@@ -240,7 +240,9 @@ class ReportListActivity : AppCompatActivity(), ReportListContract.View {
             dataBlob = ""
             val string = "a"
 
-            //readSerialData("98,97,89,102,;45,54,29,76,;9,/")
+            val random = Random().nextInt((10 + 1) - 1) + 1
+
+            //readSerialData("28636,28745,28927,28756,;22345,22445,22300,22645,;$random,/")
             usbService!!.write(string.toByteArray())
         }
 
