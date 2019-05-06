@@ -8,8 +8,6 @@
   An Android Application designed to receive, display, and export data sampled from compostable toilets.
 </div>
 
-
-## Screenshots
 <p align="middle">
   <img src="https://user-images.githubusercontent.com/9878534/57202164-3b189d80-6f70-11e9-9d0f-d275aa5a089e.png" width="20%">
   <img src="https://user-images.githubusercontent.com/9878534/57202163-381dad00-6f70-11e9-9015-c466c95e5a2c.png" width="20%">
