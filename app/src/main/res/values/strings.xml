@@ -59,6 +59,7 @@
         <item>Wiping Materials</item>
         <item>State of Trees in Pit</item>
         <item>State of Trees out of Pit</item>
+        <item>Other Info</item>
     </string-array>
 
     <string-array name="survey">

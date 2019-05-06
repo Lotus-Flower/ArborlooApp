@@ -33,6 +33,7 @@ class ReportInfo(var fullness: Int? = 1,
             infoMap.put(infoQuestions.get(8), reportInfo.wipe)
             infoMap.put(infoQuestions.get(9), reportInfo.treesInside)
             infoMap.put(infoQuestions.get(10), reportInfo.treesOutside)
+            infoMap.put(infoQuestions.get(11), reportInfo.other)
 
             return infoMap
         }
